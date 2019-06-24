@@ -25,7 +25,7 @@ def display_cover(request):
     if not request.session.__contains__('id'):
         User.managers.manager_session.clear()
         return render(request, "alarm_prediction_app/cover_page.html")
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def index(request):
@@ -53,9 +53,9 @@ def register_account(request):
         else:
             # register_user = User.managers.register_user(request.POST)
             request.session['id'] = registered_user.id
-        return redirect(reverse("login_page"))
+        return redirect(reverse("main_page"))
     if request.method == "GET":
-        return "it shouldn't suppose to be here"
+        return "it shouldn't suppose to get here"
 
 
 def set_up_error_message(request, error_messages):
@@ -70,9 +70,9 @@ def process_login(request):
             request.POST)
     if not errors:
         request.session['id'] = login_user.id
-        return redirect(reverse("login_page"))
+        return redirect(reverse("main_page"))
     set_up_error_message(request, errors)
-    return redirect("/")
+    return redirect("/register&login")
 # -------------------------------------------------------------------------------------------------------------------
 
 
@@ -94,10 +94,10 @@ def process_event(request):
             request.POST, request.session['id'])
     if not errors:
         # Pop up adjust time bar
-        return redirect(reverse("login_page"))
+        return redirect(reverse("main_page"))
     set_up_error_message(request, errors)
     # TODO: find a way to pass confict event so we can hightlight the a row in a login_page table
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def calc_alarm(request, event_id):
@@ -106,7 +106,7 @@ def calc_alarm(request, event_id):
             request.session['id'], event_id, None)
         if errors or event == None:
             set_up_error_message(request, errors)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def show_event(request, event_id):
@@ -115,20 +115,20 @@ def show_event(request, event_id):
             'event': User.managers.get_a_event(event_id, request.session['id'])
         }
         return render(request, "alarm_prediction_app/show_event.html", context)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def delete_event(request, event_id):
     if request.method == "GET":
         User.managers.delete_a_event(request.session['id'], event_id)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def display_edit_page(request, event_id):
     if request.method == 'GET':
         event = User.managers.get_a_event(event_id, request.session['id'])
         if event == None:
-            return redirect(reverse("login_page"))
+            return redirect(reverse("main_page"))
         context = {
             'event': event,
             'date': event.start_time.strftime("%Y-%m-%dT%H:%m"),
@@ -142,7 +142,7 @@ def update_event(request, event_id):
     if request.method == "POST":
         User.managers.edit_an_event(
             request.POST, request.session['id'], event_id)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def clear_input(request):
@@ -206,19 +206,24 @@ def oauth2_call_back(request):
           credentials)
 
     User.managers.save_calendar_credential(request.session['id'], credentials)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def get_google_events(request):
+    print('get_google_events')
+
     credentials = User.managers.get_current_user(
         request.session['id']).calendar_credential
+
+
+    print('credentials', credentials)
+
     service = build('calendar', 'v3', credentials=credentials.credential)
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                          maxResults=100, singleEvents=True,
-                                          orderBy='startTime').execute()
+    # events_result = service.events().list(calendarId='primary', timeMin=now,
+    #                                       maxResults=100, singleEvents=True,
+    #                                       orderBy='startTime').execute()
 
     print("\n\n********************************events_result********************************\n")
     pp.pprint(events_result)
@@ -236,7 +241,7 @@ def get_google_events(request):
     print("********************************credentials********************************", credentials)
 
     print("********************************request.user********************************", request.user)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))
 
 
 def get_time(request, calendar_event):
@@ -274,4 +279,4 @@ def get_time(request, calendar_event):
                 'summary': 'Hiking with Friends'}
 
     User.managers.g_calculate_time(request.session['id'],ex_event)
-    return redirect(reverse("login_page"))
+    return redirect(reverse("main_page"))

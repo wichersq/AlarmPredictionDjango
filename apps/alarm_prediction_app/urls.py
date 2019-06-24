@@ -1,13 +1,13 @@
 from django.conf.urls import url
 from . import views
 urlpatterns = [
-    url(r'^$', views.display_cover, name='main_page'),
+    url(r'^$', views.display_cover, name='cover_page'),
     url(r'^register&login$', views.index),
     url(r'^register$', views.register_account),
     url(r'^login$', views.process_login),
     url(r'^logout$', views.logout),
     url(r'^gcalendar/events$', views.get_google_events),
-    url(r'^user$', views.display_login, name="login_page"),
+    url(r'^user$', views.display_login, name="main_page"),
     url(r'^create$', views.process_event),
     url(r'^calc_alarm/(?P<event_id>\d+)$', views.calc_alarm),
     url(r'^show/(?P<event_id>\d+)$', views.show_event),

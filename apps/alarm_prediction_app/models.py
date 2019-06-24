@@ -140,7 +140,9 @@ class UserManager(models.Model):
                                            password=password,
                                            birthday=post_data['birthday'],
                                            gender=post_data['gender'],
-                                           home_address=address, calendar_credential=None)
+                                           home_address=address)
+                Credential.objects.create(credential=None, user=user)
+                print("****************************user.calendar_credential**********************",user.calendar_credential)
         self.manager_session['user'] = user
         return errors, user
 
@@ -184,8 +186,9 @@ class UserManager(models.Model):
 
     def save_calendar_credential(self, user_id, credential):
         current_user = self.get_current_user(user_id)
-        if not current_user.calendar_credential:
-            Credential.objects.create(credential=credential, user=current_user)
+        if not current_user.has_credential():
+            current_user.set_credential(credential)
+            # Credential.objects.create(credential=credential, user=current_user)
 
     def get_a_event(self, event_id, user_id):
         event = None
@@ -425,6 +428,12 @@ class User(models.Model):
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
+
+    def has_credential(self):
+        return self.calendar_credential.credential != None
+    
+    def set_credential(self, credential):
+        self.calendar_credential.credential = credential
 
     def __repr__(self):
         return f"<User object: first_name : {self.first_name} | "\

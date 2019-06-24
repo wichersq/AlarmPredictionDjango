@@ -51,7 +51,7 @@
                         <div class="backgroundimage">
                             <background-image src="roseimage.jpg" alt="flower">
                         </div>
-                        {%if not current_user.calendar_credential%}
+                        {%if not current_user.has_credential%}
                             <a href="/authorize">Connect to Google Calendar</a>
                         {%else%}
                             <a href="/gcalendar/events">My Google Calendar Event</a>
