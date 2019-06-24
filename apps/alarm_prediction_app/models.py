@@ -430,10 +430,13 @@ class User(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def has_credential(self):
+        print(self.calendar_credential.credential)
         return self.calendar_credential.credential != None
     
     def set_credential(self, credential):
-        self.calendar_credential.credential = credential
+        calendar_credential = self.calendar_credential
+        calendar_credential.credential = credential
+        calendar_credential.save()
 
     def __repr__(self):
         return f"<User object: first_name : {self.first_name} | "\
