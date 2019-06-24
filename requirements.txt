@@ -1,0 +1,9 @@
+Django==1.10
+django-sslserver
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+googlemaps
+pytest
+tensorflow

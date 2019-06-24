@@ -1,0 +1,80 @@
+.jumbotron {
+    padding: 4%;
+    background-image: linear-gradient(45deg, #70e1f5, #ffd194)
+}
+
+.header {
+    border-bottom: 1px solid peru;
+}
+
+.header h2 {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.right_header {
+    width: 69%;
+    display: inline-block;
+    vertical-align: top;
+    text-align: right;
+    padding: 0 5%;
+}
+
+.col {
+    width: 80%;
+    padding: 2%;
+    margin: 1% 10%;
+    border: 2px solid black;
+}
+
+.fill_box {
+    margin: 3%;
+}
+
+select,
+option {
+    padding: 1%;
+}
+
+.fill_box label {
+    vertical-align: top;
+    display: inline-block;
+    font-size: 120%;
+    width: 10%;
+}
+
+.fill_box input,
+.fill_box textarea {
+    vertical-align: top;
+    display: inline-block;
+    width: 60%;
+    padding: 0% 1%;
+    overflow: auto;
+}
+
+.fill_box textarea {
+    height: 90px;
+}
+
+.fill_box h5 {
+    display: inline-block;
+    width: 23%;
+}
+
+ul,
+li {
+    list-style: none;
+    padding: 0%;
+    margin: 1% 2%;
+}
+
+.btn {
+    margin: 1%;
+    float: right;
+}
+
+p {
+    color: red;
+    font-family: fantasy;
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>The eventing App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/show_g_events_style.css' %}">
+<style>
+
+
+#logo {
+  float: left;
+  background-color: green;
+  padding: 10px;
+  position: relative;
+}
+
+/* from: http://stackoverflow.com/questions/796087/make-a-div-into-a-link */
+#logo a span { 
+  position:absolute; 
+  width:100%;
+  height:100%;
+  top:0;
+  left: 0;
+
+  /* edit: added z-index */
+  z-index: 1;
+
+  
+}
+
+#logo:hover {
+	background-color: #0A0;  
+}
+
+#logo:active {
+	background-color: #A9A;
+  top: +2px;
+}
+</style>
+
+</head>
+
+
+
+<body class="jumbotron">
+    <div class="header">
+        <h2>Hello {{current_user.first_name}}</h2>
+        <div class="right_header">
+            <a href="/logout">Log out</a>
+            <p>Date/Time: <span id="datetime"></span></p>
+        </div>
+    </div>
+    <div class="col">
+       
+        {% for event in g_events %}
+        <li>
+        <div id="logo">
+            <h4>{{event.summary}}</h4>
+            <a href="/gcalendar/{{forloop.counter0}}/{{event.id}}"></a>
+        </div>
+        <li>
+     
+        {%endfor%}
+
+       </ul>
+    </div>
+    <script type="text/javascript" language="Javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript" src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
+
+    <script type="text/javascript">
+        function display_error() {
+            {% for message in messages %}
+            document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
+            {% endfor %}
+        }
+        display_error();
+    </script>
+
+</body>
+
+</html>
