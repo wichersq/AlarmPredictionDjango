@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>The eventing App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/add_event_style.css' %}">
+    <style>
+        .jumbotron {
+            padding: 4%;
+            background-image: linear-gradient(45deg, #70e1f5, #ffd194)
+        }
+
+        .header {
+            border-bottom: 1px solid peru;
+        }
+
+        .header h2 {
+            width: 30%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .right_header {
+            width: 69%;
+            display: inline-block;
+            vertical-align: top;
+            text-align: right;
+            padding: 0 5%;
+        }
+
+        .col {
+            width: 80%;
+            padding: 2%;
+            margin: 1% 10%;
+            border: 2px solid black;
+        }
+
+        .fill_box {
+            margin: 3%;
+        }
+
+        select,
+        option {
+            padding: 1%;
+        }
+
+        .fill_box label {
+            vertical-align: top;
+            display: inline-block;
+            font-size: 120%;
+            width: 10%;
+        }
+
+        .fill_box input,
+        .fill_box textarea {
+            vertical-align: top;
+            display: inline-block;
+            width: 60%;
+            padding: 0% 1%;
+            overflow: auto;
+        }
+
+        .fill_box textarea {
+            height: 90px;
+        }
+
+        .fill_box h5 {
+            display: inline-block;
+            width: 23%;
+        }
+
+        ul,
+        li {
+            list-style: none;
+            padding: 0%;
+            margin: 1% 2%;
+        }
+
+        .btn {
+            margin: 1%;
+            float: right;
+        }
+
+        p {
+            color: red;
+            font-family: fantasy;
+        }
+    </style>
+</head>
+
+<body class="jumbotron">
+    <div class="header">
+        <h2>Hello {{current_user.first_name}}! Make a event!</h2>
+        <div class="right_header">
+            <a href="/logout">Log out</a>
+            <p>Date/Time: <span id="datetime"></span></p>
+        </div>
+    </div>
+    <div class="col">
+        <ul class="event_info">
+            <form action='/events/create' method="POST">
+                {% csrf_token %}
+                <div class="fill_box">
+                    <p id="item_error"></p>
+                    <label> I event for:</label>
+                    <input name='item'>
+                </div>
+                <div class="fill_box">
+                    <p id="desc_error"></p>
+                    <label>Description:</label>
+
+                    <textarea class="item_desc" name="item_desc"></textarea>
+                </div>
+                <div class="btn_box">
+                    <form action='/events' method="GET">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Cancel</button>
+                    </form>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </ul>
+    </div>
+    <script type="text/javascript" language="Javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript" src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
+
+    <script type="text/javascript">
+        function display_error() {
+            {% for message in messages %}
+            document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
+            {% endfor %}
+        }
+        display_error();
+    </script>
+
+</body>
+
+</html>

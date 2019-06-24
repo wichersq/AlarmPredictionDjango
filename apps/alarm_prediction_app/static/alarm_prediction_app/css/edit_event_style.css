@@ -1,0 +1,64 @@
+.jumbotron {
+    padding: 4%;
+    background-image: linear-gradient(45deg, #8be98f, #f07d7d)
+}
+
+.header {
+    border-bottom: 1px solid peru;
+}
+
+.header h2 {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.right_header {
+    width: 69%;
+    display: inline-block;
+    vertical-align: top;
+    text-align: right;
+    padding: 0 5%;
+}
+
+.right_header h3,
+.right_header form {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+label, .custom-select, .col {
+    vertical-align: top;
+}
+
+label {
+    width: 28%;
+}
+
+input, form{
+    width: 70%;
+}
+
+form {
+    padding: 3%;
+}
+
+.btn_box {
+    width: 40%;
+    margin: 2% 5% 2% 65%;
+}
+
+.fill_box {
+    font-size: 120%;
+    margin: 5% 0;
+}
+
+.custom-control-input {
+    width: 66%;
+}
+
+.custom-control {
+    width: 12%;
+    display: inline-block;
+}

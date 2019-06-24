@@ -1,0 +1,8 @@
+__pycache__/
+.vscode/
+venv/
+db.sqlite3
+API_KEY.txt
+client_secret.json
+api_call_format
+example.txt

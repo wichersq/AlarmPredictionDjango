@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>Alarm Prediction App</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script>
+        $('button').click(function(){
+            alert("You have clicked a button!");
+        });
+    </script>
+    
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/login_page_style.css' %}">
+
+</head>
+     <body>
+        <nav class="navbar navbar-light text-center" style="background-color: #E7EAF1; padding:1%">
+
+            <div class="header">
+                <img src="{% static 'alarm_prediction_app/img/mylogo.png' %}" style="float:left" />
+                <img src="{% static 'alarm_prediction_app/img/alarmlogo.png' %}" style="float:left;width:70px" />
+                <h2 style="float:left">Hello, {{current_user.first_name}}!</h2>
+            </div>
+            <div class="right_header">
+                <a href="/logout">Log out</a>
+                <p><span id="datetime"></span></p>
+            </div>
+        </nav>
+        <main role="main">  
+                <!-- Main jumbotron for a primary marketing message or call to action -->
+            <div class="jumbotron" style= "padding: 0% 5%">
+                <div class="wrapper">
+                    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center" style="padding:2%">
+                        <h1 class="display-3" style="color: #BA2D7F">Alarm Predictability</h1>
+                        <h3 class="textbig" style="color: #939597">Don't worry about planning your next trip. We can help you plan and set an alarm for any occasion.</h3></br></br>
+                        <div class="backgroundimage">
+                            <background-image src="roseimage.jpg" alt="flower">
+                        </div>
+                        {%if not current_user.calendar_credential%}
+                            <a href="/authorize">Connect to Google Calendar</a>
+                        {%else%}
+                            <a href="/gcalendar/events">My Google Calendar Event</a>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="leftBox container-fluid">
+                    <form action='/create' method="POST">
+                        {% csrf_token %}
+                        <div class="fill_box">
+                            <label>Name Of Event:</label>
+                            <p id="n_error"></p>
+                            <input class ="input_info" name='name'>
+                        </div>
+                        <div class="fill_box">
+                            <label> Start Location:</label>
+                            <p id="s_error"></p>
+                            <input class ="input_info" name='start_address'>
+                        </div>
+                        <div class="fill_box">
+                            <label>End Location:</label>
+                            <p id="e_error"></p>
+                            <input class ="input_info" name='end_address'">
+                        </div>
+                        <div class="fill_box">
+                            <label>Event Start Time:</label>
+                            <p id="st_error"></p>
+                            <input class ="input_info" type="datetime-local" id="event_time_picker" name='start_time'
+                                value="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                        <div class="fill_box">
+                            <label>Important:</label>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="importance_level" class="custom-control-input" value="1">1
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="importance_level" class="custom-control-input" value="2">2
+
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="importance_level" class="custom-control-input" value="3"
+                                    checked="checked">3
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="importance_level" class="custom-control-input" value="4">4
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="importance_level" class="custom-control-input" value="5">5
+                            </div>
+                        </div>
+                        <div class="fill_box">
+                            <label>Travel by:</label>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by" class="custom-control-input" value="0"
+                                    checked="checked"><img src="{% static 'alarm_prediction_app/img/walk.png' %}"  />
+                                </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by" class="custom-control-input" value="1">
+                                <img src="{% static 'alarm_prediction_app/img/bicycle.png' %}"  />
+        
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by" class="custom-control-input" value="2">                
+                                <img src="{% static 'alarm_prediction_app/img/bus.png' %}"  />
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by" class="custom-control-input" value="3"><img src="{% static 'alarm_prediction_app/img/car.png' %}"  />
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by" class="custom-control-input" value="4"><img src="{% static 'alarm_prediction_app/img/airplane.png' %}"  />
+                            </div>
+                        </div>
+                        <div class="btn_box">
+                            <button type="submit" style="width:150px; min-height:25px;background-color:#D7E2E8" >Submit</button>
+                            {% comment %} <a href='/clear'><button type="submit" class="btn btn-danger" style="width:100px">Clear</button></a> {% endcomment %}
+                        </div>
+                    </form>
+                </div>
+        <div class="rightBox">
+            <div class="col-lg">
+                <h3 class="display-2 font-weight-bold">Event List</h3>
+                <p id="dq_error"></p>
+                <table class="table">
+                    <thead class="thead-dark table-responsive">
+                        <tr>
+                            <th scope="col">Event</th>
+                            <th scope="col">Start Time</th>
+                            <th scope="col">Predicted Alarm Time</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for event in event_list.all%}
+                        <tr class = "table-row">
+                            <td><a href="/show/{{event.id}}">{{event.name}}</a></td>
+                            <td>{{event.start_time}}</td>
+                            {%with is_passed=event.is_passed%}
+                            <td>
+                                {%if event.alarm == None%}
+                                <a href="calc_alarm/{{event.id}}"><button class="btn btn-primary">Get Alarm Time</button></a>
+                                {%else%}
+                                {{event.alarm}} 
+                                    {%if not is_passed%}
+                                    | <a href="#">Adjust Alarm</a>
+                                    {%endif%}
+                                {%endif%}
+                            </td>
+                            <td>
+                                {%if not is_passed%}
+                                <a href="/edit/{{event.id}}">Edit</a>
+                                {%else%}
+                                <a href="#">Rate Alarm</a>
+                                {%endif%}
+                                | <a href="/delete/{{event.id}}">Delete</a>
+                            </td>
+                            {%endwith%}
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+        <div class="pop_window alarm_time">
+                <div class="pop_container">
+                    <p>Enter the room#</p>
+                    <p>123123123131313qwfqwfqwfqwfqwfqwfqfwqwfqwfwq2</p>
+                </div>
+        </div>
+        <script type="text/javascript" language="Javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" language="Javascript"
+            src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
+        <script type="text/javascript">
+            function display_error() {
+                {% for message in messages %}
+                document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
+                {% endfor %}
+            }
+            display_error();
+            $('a').click(function(){
+                document.querySelector(".alarm_time").style.display = "inline"
+            })
+        </script>
+        <script>
+           
+        </script>
+    </main>
+    
+
+    <!-- <script>
+    $('a').click(function(){
+        alert('This is your alarm')
+    })
+    </script> -->
+    </body>
+
+<!-- <script>
+    alert('hello')
+</script> -->
+
+</html>

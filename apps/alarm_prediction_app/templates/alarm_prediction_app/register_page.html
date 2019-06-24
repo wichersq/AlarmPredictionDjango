@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>Login & Registration</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/register_page_style.css' %}">
+
+    {% block stylesheet %}{% endblock %}
+
+</head>
+
+<body class="jumbotron">
+    <h1 class="bd-title text-center text-muted">Login and Registration</h1>
+    <div class="showList">
+        <h2 class="bd-title">Register here!</h2>
+        <form action='/register' method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <div class="alert-danger" id="fn_error"></div>
+                    <input class="form-control" name='first' placeholder="First Name" pattern="^[a-zA-Z\s]{3,20}$" required/>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="alert-danger" id="ln_error"></div>
+                    <input class="form-control" name='last' placeholder="Last Name" pattern="^[a-zA-Z\s]{3,20}$" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="alert-danger" id="e_error"></div>
+                <input class="form-control" name='email' placeholder="Email"
+                    pattern='^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$' required>
+            </div>
+            <div class="form-group">
+                <div class="alert-danger" id="p_error"></div>
+                <input class="form-control" type="password" name='pass' placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <div class="alert-danger" id="cp_error"></div>
+                <input class="form-control" type="password" name='con_pass' placeholder="Confirm Password" required>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold">Date Of Birth:</label>
+
+                <div class="alert-danger" id="b_error"></div>
+                <input class="form-control" type="date" id="bd_picker" name='birthday'
+                    value="<?php echo date('Y-m-d'); ?>">
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold">Gender:</label>
+                <input class="gender_radio" type="radio" name="gender" value="1"> Male
+                <input class="gender_radio" type="radio" name="gender" value="2"> Female
+                <input class="gender_radio" type="radio" name="gender" value="0" checked="checked"> Other
+            </div>
+
+            <h4 class="font-weight-bold">Home Address:</h4>
+            <div class="alert-danger" id="adr_error"></div>
+            <div class="form-group">
+                <input type="text"  name="address" class="form-control" placeholder="Address: 1234 Main St" required>
+            </div>
+            <div class="form-group">
+                <input type="text" name="address2" class="form-control" placeholder="Address 2: Apartment, studio, or floor">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input name="city" type="text" class="form-control" placeholder="City">
+                </div>
+                <div class="form-group col-md-3">
+                    <select name='state' class="form-control dropdown">
+                        <option selected>State</option>
+                        {% for state in states %}
+                        <option value="{{state}}">{{state}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" name = 'zip' class="form-control" placeholder="Zip Code" pattern="^[0-9]{5}$" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary  btn-block">Register</button>
+            </div>
+        </form>
+    </div>
+    <div class="showList">
+        <h2 class="bd-title">Login here!</h2>
+        <form action='/login' method="POST">
+            {% csrf_token %}
+            <div id="login_error"></div>
+            <div class="form-group">
+                <input id='email_input' class="form-control" name='email' placeholder="Email@example.com">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" name='pass' placeholder="Password">
+            </div>
+            <div class="form-group">
+
+            <button type="submit" class="btn btn-success btn-block">Login</button>
+        </div>
+
+        </form>
+    </div>
+    <script type="text/javascript" language="Javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript"
+        src="{% static 'alarm_prediction_app/js/register_page_script.js'%}"></script>
+
+    <script type="text/javascript">
+
+        function display_error() {
+            {%for message in messages %}
+            document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}'; 
+            {% endfor %}
+        }
+
+        display_error();
+        setBirthdayField()
+
+        {%comment%}
+        $(document).ready(function () {
+            $('#email_input').keyup(function () {
+                var data = $("#regForm")
+                    .serialize() // capture all the data in the form in the variable data
+                $.ajax({
+                        method: "POST", // we are using a post request here, but this could also be done with a get
+                        url: "/username",
+                        data: data
+                    })
+                    .done(function (res) {
+                        $('#usernameMsg').html(
+                            res) // manipulate the dom when the response comes back
+                    })
+            })
+        }) {%endcomment %}
+
+
+        $(function() {
+
+    $("#field").bind("keyup", function(event) {
+        var regex = /^[a-zA-Z\s]+$/;
+        if (regex.test($("#field").val())) {
+            $('.validation').html('valid');
+        } else {
+            $('.validation').html("not valid");
+        }
+    });
+});
+
+    </script>
+    {% block javascript %}{% endblock %}
+</body>
+
+</html>

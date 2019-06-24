@@ -1,0 +1,84 @@
+*{
+    font-family: font-family: 'Raleway', sans-serif;
+    font-family: 'Nunito', sans-serif;
+}
+body {
+        background-image: url("rose2.png");
+} 
+div.container{
+        width:100%; 
+        min-height:800px;
+        font-size: 18px;
+        color: #4F5A5E;  
+}
+.leftBox, .rightBox{
+        width:45%;
+        padding:3%; 
+        min-height:500px;
+        display:inline-block; 
+        vertical-align:top;
+}
+.header h2 {
+        width: 30%;
+        display: inline-block;
+        vertical-align: top;
+        font-size: 40px; 
+}
+.right_header {
+        /* width: 69%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: right;
+        padding: 0 5%; */
+        font-size:20px;
+}
+
+.pop_window {
+    background: rgba(0, 0, 0, 0.657);
+    position: fixed;
+    width: 100%;
+    min-height: 800px;
+    display: none;
+
+}
+
+.pop_container {
+    background: white;
+    min-height: 660px;
+    width: 75%;
+    position: relative;
+    left: 50%;
+    margin-left: -37.5%;
+    top: 30px;
+    text-align: center;
+}
+#alarm_time {
+    cursor: pointer;
+}
+img{
+    width:50px;
+    min-height:30px;
+    position: relative; 
+    top: 5px;
+}
+.input_info{
+    width:80%;
+    display:block;
+    font-size:120%;
+    padding:1%
+}
+label{
+    margin:4% 0;
+    display:block;
+}
+.btn_box{
+    padding: 1%;
+    margin:2%;
+}
+.custom-control{
+    width:18%;
+    display: inline-block;
+}
+p{
+    color:#BB2E55
+}

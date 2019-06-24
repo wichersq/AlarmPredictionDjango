@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>The Wishing App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/edit_event_style.css' %}">
+</head>
+
+<body class="jumbotron">
+    <div class="header">
+        <h2>Hello {{current_user.first_name}}!</h2>
+        <div class="right_header">
+            <a href="/wishes/logout">Log out</a>
+            <p>Date/Time: <span id="datetime"></span></p>
+        </div>
+    </div>
+    <div class="body_box">
+        <div class="col">
+            <h3 class="display-2">Edit Event:</h3>
+            <p id="dq_error"></p>
+            <form action='/update/{{event.id}}' method="POST">
+                {% csrf_token %}
+                <div class="fill_box">
+                    <p id="n_error"></p>
+                    <label>Name Of Event:</label>
+                    <input name='name' value="{{event.name}}">
+                </div>
+                <div class="fill_box">
+                    <p id="s_error"></p>
+                    <label> Start Location:</label>
+                    <input name='start_point' value="{{event.start_address}}">
+                </div>
+                <div class="fill_box">
+                    <p id="e_error"></p>
+                    <label>End Location:</label>
+                    <input name='end_point' value="{{event.end_address}}">
+                </div>
+                <div class="fill_box">
+                    <p id="st_error"></p>
+                    <p id="tr_error"></p>
+                    <label>Event Start Time:</label>
+                    <input type="datetime-local" id="event_time_picker" name='start_time'
+                        value={{date}}>
+                    {% comment %} {% endcomment %}
+                </div>
+                <div class="fill_box">
+                    <label>Important:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="important_lv" class="custom-control-input 1" value="1">1
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="important_lv" class="custom-control-input 2" value="2">2
+
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="important_lv" class="custom-control-input 3" value="3"
+                            checked="checked">3
+
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="important_lv" class="custom-control-input 4" value="4">4
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="important_lv" class="custom-control-input 5" value="5">5
+                    </div>
+                </div>
+                <div class="fill_box">
+                    <label>Travel by:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="travel_by" class="custom-control-input walking" value="0">Walking
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="travel_by" class="custom-control-input biking" value="1">Biking
+
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="travel_by" class="custom-control-input transit" value="2">Transit
+
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="travel_by" class="custom-control-input driving" value="3">Driving
+                    </div>
+                </div>
+                <div class="btn_box">
+                    <a href='/clear'><button type="submit" class="btn btn-danger">Clear</button></a>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+    <script type="text/javascript" language="Javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript" src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
+    <script type="text/javascript">
+        function display_error() {
+            {% for message in messages %}
+            document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
+            {% endfor %}
+        }
+        $('.' + "{{event.get_trans_display}}").prop('checked',true);
+        $('.' + "{{event.importance_level}}").prop('checked',true);
+        display_error();
+    </script>
+</body>
+
+</html>

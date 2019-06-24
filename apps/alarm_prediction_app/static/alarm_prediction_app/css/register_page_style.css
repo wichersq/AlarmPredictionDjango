@@ -1,0 +1,47 @@
+.jumbotron {
+    background-image: linear-gradient(60deg,
+        #F5EEEE, #E8E8EA);
+    padding: 1% 5%;
+}
+
+.bd-title {
+    margin: 2%;
+}
+
+.showList {
+    display: inline-block;
+    vertical-align: top;
+    width: 38%;
+    margin: 2% 5%;
+}
+input{
+    padding: 10px 15px;
+    width: 100%;
+}
+
+.btn {
+    margin-top: 2%;
+}
+
+.gender_radio {
+    display: inline-block;
+    width: 10%;
+    padding: 0;
+}
+
+btn-success{
+    background-color: #D7E2E8
+}
+#bd_picker{
+    width: 78%;
+    display: inline-block;
+}
+
+input:valid {
+    color: blue;
+  }
+
+input:invalid {
+    color: red;
+/* border: 2px dashed red; */
+}
