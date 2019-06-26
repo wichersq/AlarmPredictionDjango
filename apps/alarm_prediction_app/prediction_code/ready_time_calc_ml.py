@@ -27,13 +27,14 @@ class AlarmCalcML():
         # sample_x =[[5.03900000e+03, -1,  0, 5, 1,  3.08975745e-04, 1]]
         result = ml_model.inference(sample_x)[0][0]
         print(result)
-        return result
+        return self.convert_result_format(result)
+        
 
     def get_input(self, event):
-        input = [event['travel_duration'],
-                 event['dest_place']['price_level'], 0,
-                 event['dest_place']['rating'], 0,
-                 event['dest_place']['reviews'], 0, event['important_level']]
+        input = [event.travel_duration,
+                 event.dest_place.price_level, 0,
+                 event.dest_place.rating, 0,
+                 event.dest_place.reviews, 0, event.importance_level]
         print("********************ready_time_calc_ml()---get_input()----event*************", event)
         for i in range(1, 6, 2):
             if input[i] != None:
@@ -42,5 +43,13 @@ class AlarmCalcML():
                 input[i] = -1
         print("********************ready_time_calc_ml()---get_input()----input*************", input)
         return input
+
+    def convert_result_format(self, numpy_float):
+        return numpy_float.tolist()
+        # a = numpy_float.tolist()
+        # print('a', type(a))
+        # print('a[0]', type(a[0]))
+        # return a[0]
+
 
 

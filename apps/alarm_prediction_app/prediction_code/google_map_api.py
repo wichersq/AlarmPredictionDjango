@@ -24,10 +24,10 @@ class MapsAPI:
         self.google_places = GooglePlaces(API_KEY)
 
     def set_place_id(self, place, place_address):
-        place.google_place_id = self.get_place_id(place_address)
-       
-    
-    def get_place_id(self, place_address):
+        place.google_place_id = self.find_place_id(place_address)
+
+
+    def find_place_id(self, place_address):
         result = self.gmaps_get_place_ID.find_place(
             input=place_address, input_type='textquery')
         try:
@@ -41,7 +41,7 @@ class MapsAPI:
         if index in place_detail:
             return place_detail[index]
 
-    def get_store_detail(self, place):
+    def set_store_detail(self, place):
         maps_place = self.google_places.get_place(place.google_place_id)
         maps_place.get_details()
         detail = maps_place.details
@@ -57,13 +57,13 @@ class MapsAPI:
         place.url = self.safe_index(detail, 'url')
         place.website = self.safe_index(detail, 'website')
         place.rating = self.safe_index(detail, 'rating')
-        place.reviews = self.safe_index(detail, 'user_rating_total')
+        place.reviews = self.safe_index(detail, 'user_ratings_total')
         place.type_store = self.safe_index(detail, 'types')
         # place.save()
 
     def get_place_info(self, place, place_name):
-        self.get_place_id(place, place_name)
-        self.get_store_detail(place)
+        self.set_place_id(place, place_name)
+        self.set_store_detail(place)
 
     def get_time(self, event, arrival_time):
         leg = None
