@@ -4,6 +4,8 @@ import bcrypt
 import datetime
 import math
 import pytz
+from dateutil import tz
+import tzlocal  # $ pip install tzlocal
 
 from django.db import models
 from django.db.models import Q
@@ -41,6 +43,9 @@ class UserManager(models.Model):
                            'time_range': 'Conflict with another event',
                            'data_request': 'Invalid address. Please check origin and destination'
                            }
+    DATE_STR_TZONE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+    DATE_STR_FORMAT = '%Y-%m-%dT%H:%M'
+
     api_key_file = open("API_KEY.txt", 'r')
     API_KEY = api_key_file.readline().rstrip()
 
@@ -142,7 +147,8 @@ class UserManager(models.Model):
                                            gender=post_data['gender'],
                                            home_address=address)
                 Credential.objects.create(credential=None, user=user)
-                print("****************************user.calendar_credential**********************",user.calendar_credential)
+                print("****************************user.calendar_credential**********************",
+                      user.calendar_credential)
         self.manager_session['user'] = user
         return errors, user
 
@@ -194,7 +200,7 @@ class UserManager(models.Model):
         event = None
         try:
             event = Event.objects.get(id=event_id)
-            print('get_a_event',event)
+            print('get_a_event', event)
         except ObjectDoesNotExist:
             return event
 
@@ -220,65 +226,58 @@ class UserManager(models.Model):
             print(errors['st_error'])
         else:
             today = datetime.now(pytz.timezone('US/Pacific'))
-            start_time = self.convert_start_time(start_time)
-            print(type(today))
+            start_time = self.convert_time_from_str(start_time)
             # TODO: put it aback
             # if start_time < today:
             #     errors['st_error'] = self.CREATE_OBJECT_ERROR['date']
-        return errors
+        return errors, start_time.strftime(self.DATE_STR_TZONE_FORMAT)
 
-
-    def create_event(self, post_data, user_id):
+    def create_event(self, post_data, user_id, from_g_calendar):
         name = post_data['name']
         start = post_data['start_address']
         dest = post_data['end_address']
         start_time = post_data['start_time']
         importance_level = post_data['importance_level']
-        travel_by = post_data['travel_by']
+        travel_by = int(post_data['travel_by'])
         description = post_data['description']
-        if not description:
-            description = ''
 
-        print('start_time', type(start_time))
-        errors = self.validate_event(name, start, dest, start_time)
+        errors, str_time = self.validate_event(name, start, dest, start_time)
+        print("**********************str_time***************", str_time)
+        
+        # set timezone for start_time not from google calendar
+        if not from_g_calendar:
+            start_time = str_time
         event = None
         current_user = self.get_current_user(user_id)
         if not errors:
             event = Event.objects.create(
                 name=name, creator=current_user, start_address=start,
-                end_address=dest, importance_level=importance_level, description =description,
+                end_address=dest, importance_level=importance_level, description=description,
                 start_time=start_time, travel_by=travel_by)
             Place.objects.create(event=event)
         return errors, event
 
-
     def g_calculate_time(self, user_id, event_info):
         print('in model g_calculate_time')
-        event_info['travel_duration'] = 840
-        event_info['travel_distance'] = 14162
-        # event_info['dest_place'] = {'price_level': None,
-        #                        'reviews': 444,
-        #                        'rating': 4.6}
-        errors, event = self.create_event(event_info, user_id)
-        # event = self.get_a_event(11,3)
-        # print('g_calculate_time',event)# errors, event = self.create_event(event_info, user_id)
-        # event = self.get_a_event(11,3)
-        # print('g_calculate_time',event)
-        errors={}
+        print('********************event_info********************' , event_info)
+        errors, event = self.create_event(event_info, user_id, True)
+        print('**************event***********************',type(event))
         if event:
-            destination = event.dest_place
-            try:
-                self.DATA_REQUEST.get_place_info(destination, event.end_address)
-                event = self.DATA_REQUEST.get_time(event, event.start_time)
-            except ValueError as err:
-                print('catch the error', err)
-                errors['dq_error'] = self.CREATE_OBJECT_ERROR['data_request']
-                return errors, None
-            destination.save()
-            self.set_alarm_time(event, self.ALARM_CALC_ML)
-            event.save()
-            return errors, event
-
+            if event.travel_by != 3:
+                errors, event = self.get_alarm_time(user_id, event.id, None)
+            else:
+                destination = event.dest_place
+                try:
+                    self.DATA_REQUEST.get_place_info(destination, event.end_address)
+                    event = self.DATA_REQUEST.get_time(event, event.start_time)
+                except ValueError as err:
+                    print('catch the error', err)
+                    errors['dq_error'] = self.CREATE_OBJECT_ERROR['data_request']
+                    return errors, None
+                destination.save()
+                self.set_alarm_time(event, self.ALARM_CALC_ML)
+                event.save()
+        return errors, event
 
         # errors, event = self.create_event(event_info, user_id)
         # if errors:
@@ -309,14 +308,16 @@ class UserManager(models.Model):
         re_calc_needed = False
         if event.alarm != None:
             if event.start_address != post_data['start_address']:
+                event.start_address = post_data['start_address']
                 print(event.start_address, post_data['start_address'])
                 call_api_needed = True
             elif event.end_address != post_data['end_address']:
+                event.end_address = post_data['end_address']
                 print(event.end_address, post_data['end_address'])
                 call_api_needed = True
-            elif event.start_time.strftime("%Y-%m-%dT%H:%M") != post_data['start_time']:
+            elif event.start_time == self.convert_time_from_str(post_data['start_time']):
                 print(event.start_time.strftime(
-                    "%Y-%m-%dT%H:%M"), post_data['start_time'])
+                    self.DATE_STR_FORMAT), post_data['start_time'])
                 call_api_needed = True
             elif event.travel_by != int(post_data['travel_by']):
                 print(event.travel_by, post_data['travel_by'])
@@ -333,7 +334,7 @@ class UserManager(models.Model):
         event.name = post_data['name']
         event.start_address = post_data['start_address']
         event.end_address = post_data['end_address']
-        event.start_time = self.convert_start_time(post_data['start_time'])
+        event.start_time = self.convert_time_from_str(post_data['start_time'])
         event.importance_level = int(post_data['importance_level'])
         event.travel_by = int(post_data['travel_by'])
         print(event.travel_by)
@@ -347,24 +348,20 @@ class UserManager(models.Model):
         print('errors', errors, event.end_address)
         return errors, event
 
-    def convert_start_time(self, str_time):
-        date_str_format = '%Y-%m-%dT%H:%M'
-        if len(str_time) > 15:
-            time = str_time[0:16]
-            start_time = datetime.strptime(time,date_str_format)
-            print('before:', start_time)
-            time_zone = str_time[-6:]
-            # This method just label
-            start_time = pytz.timezone('US/Pacific').localize(start_time)
-            print('after:', start_time)
-            # before: 2019-06-22 10:30:00
-            # after: 2019-06-22 10:30:00-07:00
-            # TODO: can we convert directly from '2019-06-22T10:30:00-07:00'
+    def convert_time_from_str(self, str_time):
+        date_str_format = self.DATE_STR_FORMAT
+        start_time = None
+        if len(str_time) == 25:
+            str_time = str_time[:22] + str_time[23:]
+            date_str_format = self.DATE_STR_TZONE_FORMAT
+            start_time = datetime.strptime(str_time, date_str_format)
 
         else:
-            start_time = datetime.strptime(str_time,date_str_format)
+            start_time = datetime.strptime(str_time, date_str_format)
             start_time = pytz.timezone('US/Pacific').localize(start_time)
-        print("convert_start_time start_time", type(start_time))
+            # before: 2019-06-22 10:30:00
+            # after: 2019-06-22 10:30:00-07:00
+        print("convert_time_from_str start_time", start_time)
         return start_time
 
     def get_alarm_time(self, user_id, event_id, event):
@@ -380,6 +377,7 @@ class UserManager(models.Model):
                 arrival_sec = self.ALARM_CALC.calc_sec_arrive(
                     event.dest_place.reviews, event.dest_place.price_level, event.dest_place.rating)
                 print('arrival_sec', arrival_sec)
+                print('type(event.start_time)', type(event.start_time))
                 arrival_time = event.start_time - \
                     timedelta(seconds=arrival_sec)
                 print('arrival_time', arrival_time)
@@ -392,16 +390,18 @@ class UserManager(models.Model):
                 print('catch the error', err)
                 errors['dq_error'] = self.CREATE_OBJECT_ERROR['data_request']
                 return errors, None
-            self.set_alarm_time(event, self.ALARM_CALC)
             event.dest_place.save()
+            self.set_alarm_time(event, self.ALARM_CALC)
             event.save()
         return errors, event
 
     def set_alarm_time(self, event, obj):
         recommended_ready_sec = obj.calc_alarm_time(event)
+        start_time = event.start_time
+        if(type(start_time) == str):
+            start_time = self.convert_time_from_str(start_time)
 
-        event.alarm = event.start_time - \
-            timedelta(seconds=recommended_ready_sec)
+        event.alarm = start_time - timedelta(seconds=recommended_ready_sec)
         print('travel time', event.travel_duration/60)
         print("recommended_ready_sec", recommended_ready_sec/60)
 
@@ -427,7 +427,8 @@ class User(models.Model):
     GENDER_MALE = 1
     GENDER_FEMALE = 2
     GENDER_OTHER = 0
-    GENDER_CHOICES = [(GENDER_OTHER, 'NA'), (GENDER_MALE, 'Male'), (GENDER_FEMALE, 'Female')]
+    GENDER_CHOICES = [(GENDER_OTHER, 'NA'), (GENDER_MALE,
+                                             'Male'), (GENDER_FEMALE, 'Female')]
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     email = models.CharField(max_length=255)
@@ -503,18 +504,20 @@ class Event(models.Model):
         return self.get_format_duration(self.travel_duration)
 
     def get_format_prep_duration(self):
+        if self.prep_duration==None or self.early_arrival_sec==None:
+            return 'Not Available'
         return self.get_format_duration(self.prep_duration + self.early_arrival_sec)
 
     def get_format_duration(self, second):
-        hour = math.floor(second/3600)
-        minute = math.floor((second % 3600)/60)
-        time_str = ""
-        if hour > 0:
-            time_str = str(hour) + " hour(s) "
-        if minute > 0:
-            time_str += str(minute) + " minute(s)"
-        print('time_str', time_str)
-        return time_str
+        time_str = 'Not Available'
+        if second:
+            hour = math.floor(second/3600)
+            minute = math.floor((second % 3600)/60)
+            if hour > 0:
+                time_str = str(hour) + " hour(s) "
+            if minute > 0:
+                time_str = str(minute) + " minute(s)"
+            return time_str
 
 
 class Place(models.Model):

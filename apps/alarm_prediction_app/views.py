@@ -10,7 +10,9 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 import bcrypt
 import datetime
-
+from datetime import datetime
+import time
+import json 
 from googleapiclient.discovery import build
 import pprint
 # TODO: fix it to work with ajax
@@ -91,7 +93,7 @@ def display_login(request):
 def process_event(request):
     if request.method == "POST":
         errors, event, = User.managers.create_event(
-            request.POST, request.session['id'])
+            request.POST, request.session['id'], False)
     if not errors:
         # Pop up adjust time bar
         return redirect(reverse("main_page"))
@@ -209,340 +211,228 @@ def oauth2_call_back(request):
     return redirect(reverse("main_page"))
 
 
-# def get_g_events(request):
-#     print('get_google_events')
+def get_info_from_gcalendar(request):
+    print('get_google_events')
 
-#     credentials = User.managers.get_current_user(
-#         request.session['id']).calendar_credential
+    credentials = User.managers.get_current_user(
+        request.session['id']).calendar_credential
 
 
-#     print('credentials', credentials)
+    print('credentials', credentials)
 
-#     service = build('calendar', 'v3', credentials=credentials.credential)
-#     # Call the Calendar API
-#     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+    service = build('calendar', 'v3', credentials=credentials.credential)
+    # Call the Calendar API
+    now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
 
-#     events_result = service.events().list(calendarId='primary', timeMin=now,
-#                                           maxResults=100, singleEvents=True,
-#                                           orderBy='startTime').execute()
+    events_result = service.events().list(calendarId='primary', timeMin=now,
+                                          maxResults=100, singleEvents=True,
+                                          orderBy='startTime').execute()
 
-#     print("\n\n********************************events_result********************************\n")
-#     pp.pprint(events_result)
-#     print("\n\n********************************events********************************\n")
+    print("\n\n********************************events_result********************************\n")
+    pp.pprint(events_result)
+    
+    print("\n\n********************************events********************************\n")
 
-#     events = events_result.get('items', [])
+    events = events_result.get('items', [])
 
-#     if not events:
-#         print('No upcoming events found.')
-#     for event in events:
-#         start = event['start'].get('dateTime', event['start'].get('date'))
-#         print(start, event)
-#     # storage = DjangoORMStorage(CredentialsModel, 'id', request.user, 'credential')
-#     # storage.put(credential)
-#     print("********************************credentials********************************", credentials)
+    if not events:
+        print('No upcoming events found.')
+    for event in events:
+        start = event['start'].get('dateTime', event['start'].get('date'))
+        print(start, event)
+    # storage = DjangoORMStorage(CredentialsModel, 'id', request.user, 'credential')
+    # storage.put(credential)
+    print("********************************credentials********************************", credentials)
 
-#     print("********************************request.user********************************", request.user)
-#     return redirect(reverse("main_page"))
+    print("********************************request.user********************************", request.user)
+    return events_result
 
-google_events = [{'attendees': [{'email': 'queenie.giap@gmail.com',
-                                        'responseStatus': 'needsAction'},
-                                       {'email': 'example@gmail.com',
-                                        'organizer': True,
-                                        'responseStatus': 'accepted',
-                                        'self': True}],
-                         'created': '2019-06-21T04:43:59.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': 'Hiking at Castle Rock',
-                         'end': {'dateTime': '2019-06-22T11:30:00-07:00'},
-                         'etag': '"3122184478890000"',
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=Mmw0b2hoMHRmY3Y4ZTMxbmc2bm45ODIxdTEgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '2l4ohh0tfcv8e31ng6nn9821u1@google.com',
-                         'id': '2l4ohh0tfcv8e31ng6nn9821u1',
-                         'kind': 'calendar#event',
-                         'location': 'Stevens Creek County Park, 11401 Stevens Canyon '
-                         'Rd, Cupertino, CA 95014, USA',
-                         'organizer': {'email': 'example@gmail.com', 'self': True},
-                         'reminders': {'useDefault': True},
-                         'sequence': 0,
-                         'start': {'dateTime': '2019-06-22T10:30:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Hiking with Friends',
-                         'updated': '2019-06-21T04:43:59.445Z'},
-                        {'created': '2019-06-21T04:46:22.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': "Dinner with Nev's cousin",
-                         'end': {'dateTime': '2019-06-22T20:00:00-07:00'},
-                         'etag': '"3122184765242000"',
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=NGpybjkxdDF1c2pvMm1mcjA0aGZmcWIwbzAgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '4jrn91t1usjo2mfr04hffqb0o0@google.com',
-                         'id': '4jrn91t1usjo2mfr04hffqb0o0',
-                         'kind': 'calendar#event',
-                         'location': 'Pho Lovers, 253 E Maude Ave, Sunnyvale, CA 94085, '
-                         'USA',
-                         'organizer': {'email': 'example@gmail.com', 'self': True},
-                         'reminders': {'useDefault': True},
-                         'sequence': 0,
-                         'start': {'dateTime': '2019-06-22T19:00:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Dinner ',
-                         'updated': '2019-06-21T04:46:22.621Z'},
-                        {'created': '2019-06-21T04:47:14.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'end': {'dateTime': '2019-06-23T12:30:00-07:00'},
-                         'etag': '"3122184869504000"',
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=MzducTVqNnMyOHM0YnBrZ2loMXVzbzBudmggcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '37nq5j6s28s4bpkgih1uso0nvh@google.com',
-                         'id': '37nq5j6s28s4bpkgih1uso0nvh',
-                         'kind': 'calendar#event',
-                         'location': 'Starbucks, 175 E El Camino Real, Mountain View, CA '
-                         '94040, USA',
-                         'organizer': {'email': 'example@gmail.com', 'self': True},
-                         'reminders': {'useDefault': True},
-                         'sequence': 0,
-                         'start': {'dateTime': '2019-06-23T11:30:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Meeting with Dylan ',
-                         'updated': '2019-06-21T04:47:14.752Z'},
-                        {'attendees': [{'email': 'example@gmail.com',
-                                        'responseStatus': 'accepted',
-                                        'self': True}],
-                         'created': '2019-06-10T22:34:10.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': 'To see detailed information for automatically '
-                         'created events like this one, use the official '
-                         'Google Calendar app. https://g.co/calendar\n'
-                         '\n'
-                         'This event was created from an email you '
-                         'received in Gmail. '
-                         'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0\n',
-                         'end': {'dateTime': '2019-07-05T19:55:00-07:00'},
-                         'etag': '"3120412101631000"',
-                         'guestsCanInviteOthers': False,
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=XzZ0bG5hcXJsZTVwNmNwYjRkaG1qNHBocGVocG1pcTFpZWxoamlxMzU2ZHBqY2RyM2M1bTNhcmIyNjFqMzJkamxjOWptNmMzNGUxZ204ZWJrZWtwM2dzMWljOHI3NnByNjZrb21tc2I4ZHRuajAgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '7kukuqrfedlm2f9tsih2uc9he3s67cal5mb0f16ubgc0dpad9tu28p2b6sgf51kqhoo0',
-                         'id': '_6tlnaqrle5p6cpb4dhmj4phpehpmiq1ielhjiq356dpjcdr3c5m3arb261j32djlc9jm6c34e1gm8ebkekp3gs1ic8r76pr66kommsb8dtnj0',
-                         'kind': 'calendar#event',
-                         'location': 'San Jose SJC',
-                         'organizer': {'email': 'unknownorganizer@calendar.google.com'},
-                         'privateCopy': True,
-                         'reminders': {'useDefault': False},
-                         'sequence': 0,
-                         'source': {'title': '',
-                                    'url': 'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0'},
-                         'start': {'dateTime': '2019-07-05T17:45:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Flight to Everett (AS 2741)',
-                         'transparency': 'transparent',
-                         'updated': '2019-06-10T22:34:10.857Z',
-                         'visibility': 'private'},
-                        {'attendees': [{'email': 'example@gmail.com',
-                                        'responseStatus': 'accepted',
-                                        'self': True}],
-                         'created': '2019-06-10T22:34:10.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': 'To see detailed information for automatically '
-                         'created events like this one, use the official '
-                         'Google Calendar app. https://g.co/calendar\n'
-                         '\n'
-                         'This event was created from an email you '
-                         'received in Gmail. '
-                         'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0\n',
-                         'end': {'dateTime': '2019-07-20T09:40:00-07:00'},
-                         'etag': '"3120412101631000"',
-                         'guestsCanInviteOthers': False,
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=XzZ0bG5hcXJsZTVwNmNwYjRkaG1qNHBocGVnb21lczMzY2RuNjRzYmFjZHBtdW9yOTYxajZxc3BtZGNzNzBzajZkdGszNnNiaDYxazM4cnI5ZGxsbjJyaG82Y3FtNGNqYjZzcjc0c2o3NmhpbWUgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '7kukuqrfedlm2f9t1gpccnbqjcsoci0fms6k8prfoh3qq0h4oimkqn835b2k76rrg4eg',
-                         'id': '_6tlnaqrle5p6cpb4dhmj4phpegomes33cdn64sbacdpmuor961j6qspmdcs70sj6dtk36sbh61k38rr9dlln2rho6cqm4cjb6sr74sj76hime',
-                         'kind': 'calendar#event',
-                         'location': 'Everett PAE',
-                         'organizer': {'email': 'unknownorganizer@calendar.google.com'},
-                         'privateCopy': True,
-                         'reminders': {'useDefault': False},
-                         'sequence': 0,
-                         'source': {'title': '',
-                                    'url': 'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0'},
-                         'start': {'dateTime': '2019-07-20T07:30:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Flight to San Jose (AS 2740)',
-                         'transparency': 'transparent',
-                         'updated': '2019-06-10T22:34:10.857Z',
-                         'visibility': 'private'}]
+# def retjson():
+#     a = { 'accessRole': 'owner',
+#   'defaultReminders': [{'method': 'popup', 'minutes': 30}],
+#   'etag': '"p320e98u0sbsu40g"',
+#   'items': [ { 'attendees': [ { 'email': 'queenie.giap@gmail.com',
+#                                 'responseStatus': 'needsAction'},
+#                               { 'email': 'example@gmail.com',
+#                                 'organizer': True,
+#                                 'responseStatus': 'accepted',
+#                                 'self': True}],
+#                'created': '2019-06-21T04:43:59.000Z',
+#                'creator': {'email': 'example@gmail.com', 'self': True},
+#                'description': 'Hiking at Castle Rock',
+#                'end': {'dateTime': '2019-06-22T11:30:00-07:00'},
+#                'etag': '"3122184478890000"',
+#                'htmlLink': 'https://www.google.com/calendar/event?eid=Mmw0b2hoMHRmY3Y4ZTMxbmc2bm45ODIxdTEgcXV5ZW4ud2ljaGVyc0Bt',
+#                'iCalUID': '2l4ohh0tfcv8e31ng6nn9821u1@google.com',
+#                'id': '2l4ohh0tfcv8e31ng6nn9821u1',
+#                'kind': 'calendar#event',
+#                'location': 'Stevens Creek County Park, 11401 Stevens Canyon '
+#                            'Rd, Cupertino, CA 95014, USA',
+#                'organizer': {'email': 'example@gmail.com', 'self': True},
+#                'reminders': {'useDefault': True},
+#                'sequence': 0,
+#                'start': {'dateTime': '2019-06-22T10:30:00-07:00'},
+#                'status': 'confirmed',
+#                'summary': 'Hiking with Friends',
+#                'updated': '2019-06-21T04:43:59.445Z'},
+#              { 'created': '2019-06-21T04:46:22.000Z',
+#                'creator': {'email': 'example@gmail.com', 'self': True},
+#                'description': "Dinner with Nev's cousin",
+#                'end': {'dateTime': '2019-06-22T20:00:00-07:00'},
+#                'etag': '"3122184765242000"',
+#                'htmlLink': 'https://www.google.com/calendar/event?eid=NGpybjkxdDF1c2pvMm1mcjA0aGZmcWIwbzAgcXV5ZW4ud2ljaGVyc0Bt',
+#                'iCalUID': '4jrn91t1usjo2mfr04hffqb0o0@google.com',
+#                'id': '4jrn91t1usjo2mfr04hffqb0o0',
+#                'kind': 'calendar#event',
+#                'location': 'Pho Lovers, 253 E Maude Ave, Sunnyvale, CA 94085, '
+#                            'USA',
+#                'organizer': {'email': 'example@gmail.com', 'self': True},
+#                'reminders': {'useDefault': True},
+#                'sequence': 0,
+#                'start': {'dateTime': '2019-06-22T19:00:00-07:00'},
+#                'status': 'confirmed',
+#                'summary': 'Dinner ',
+#                'updated': '2019-06-21T04:46:22.621Z'},
+#              { 'created': '2019-06-21T04:47:14.000Z',
+#                'creator': {'email': 'example@gmail.com', 'self': True},
+#                'end': {'dateTime': '2019-06-23T12:30:00-07:00'},
+#                'etag': '"3122184869504000"',
+#                'htmlLink': 'https://www.google.com/calendar/event?eid=MzducTVqNnMyOHM0YnBrZ2loMXVzbzBudmggcXV5ZW4ud2ljaGVyc0Bt',
+#                'iCalUID': '37nq5j6s28s4bpkgih1uso0nvh@google.com',
+#                'id': '37nq5j6s28s4bpkgih1uso0nvh',
+#                'kind': 'calendar#event',
+#                'location': 'Starbucks, 175 E El Camino Real, Mountain View, CA '
+#                            '94040, USA',
+#                'organizer': {'email': 'example@gmail.com', 'self': True},
+#                'reminders': {'useDefault': True},
+#                'sequence': 0,
+#                'start': {'dateTime': '2019-06-23T11:30:00-07:00'},
+#                'status': 'confirmed',
+#                'summary': 'Meeting with Dylan ',
+#                'updated': '2019-06-21T04:47:14.752Z'},
+#              { 'attendees': [ { 'email': 'example@gmail.com',
+#                                 'responseStatus': 'accepted',
+#                                 'self': True}],
+#                'created': '2019-06-10T22:34:10.000Z',
+#                'creator': {'email': 'example@gmail.com', 'self': True},
+#                'description': 'To see detailed information for automatically '
+#                               'created events like this one, use the official '
+#                               'Google Calendar app. https://g.co/calendar\n'
+#                               '\n'
+#                               'This event was created from an email you '
+#                               'received in Gmail. '
+#                               'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0\n',
+#                'end': {'dateTime': '2019-07-05T19:55:00-07:00'},
+#                'etag': '"3120412101631000"',
+#                'guestsCanInviteOthers': False,
+#                'htmlLink': 'https://www.google.com/calendar/event?eid=XzZ0bG5hcXJsZTVwNmNwYjRkaG1qNHBocGVocG1pcTFpZWxoamlxMzU2ZHBqY2RyM2M1bTNhcmIyNjFqMzJkamxjOWptNmMzNGUxZ204ZWJrZWtwM2dzMWljOHI3NnByNjZrb21tc2I4ZHRuajAgcXV5ZW4ud2ljaGVyc0Bt',
+#                'iCalUID': '7kukuqrfedlm2f9tsih2uc9he3s67cal5mb0f16ubgc0dpad9tu28p2b6sgf51kqhoo0',
+#                'id': '_6tlnaqrle5p6cpb4dhmj4phpehpmiq1ielhjiq356dpjcdr3c5m3arb261j32djlc9jm6c34e1gm8ebkekp3gs1ic8r76pr66kommsb8dtnj0',
+#                'kind': 'calendar#event',
+#                'location': 'San Jose SJC',
+#                'organizer': {'email': 'unknownorganizer@calendar.google.com'},
+#                'privateCopy': True,
+#                'reminders': {'useDefault': False},
+#                'sequence': 0,
+#                'source': { 'title': '',
+#                            'url': 'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0'},
+#                'start': {'dateTime': '2019-07-05T17:45:00-07:00'},
+#                'status': 'confirmed',
+#                'summary': 'Flight to Everett (AS 2741)',
+#                'transparency': 'transparent',
+#                'updated': '2019-06-10T22:34:10.857Z',
+#                'visibility': 'private'},
+#              { 'attendees': [ { 'email': 'example@gmail.com',
+#                                 'responseStatus': 'accepted',
+#                                 'self': True}],
+#                'created': '2019-06-10T22:34:10.000Z',
+#                'creator': {'email': 'example@gmail.com', 'self': True},
+#                'description': 'To see detailed information for automatically '
+#                               'created events like this one, use the official '
+#                               'Google Calendar app. https://g.co/calendar\n'
+#                               '\n'
+#                               'This event was created from an email you '
+#                               'received in Gmail. '
+#                               'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0\n',
+#                'end': {'dateTime': '2019-07-20T09:40:00-07:00'},
+#                'etag': '"3120412101631000"',
+#                'guestsCanInviteOthers': False,
+#                'htmlLink': 'https://www.google.com/calendar/event?eid=XzZ0bG5hcXJsZTVwNmNwYjRkaG1qNHBocGVnb21lczMzY2RuNjRzYmFjZHBtdW9yOTYxajZxc3BtZGNzNzBzajZkdGszNnNiaDYxazM4cnI5ZGxsbjJyaG82Y3FtNGNqYjZzcjc0c2o3NmhpbWUgcXV5ZW4ud2ljaGVyc0Bt',
+#                'iCalUID': '7kukuqrfedlm2f9t1gpccnbqjcsoci0fms6k8prfoh3qq0h4oimkqn835b2k76rrg4eg',
+#                'id': '_6tlnaqrle5p6cpb4dhmj4phpegomes33cdn64sbacdpmuor961j6qspmdcs70sj6dtk36sbh61k38rr9dlln2rho6cqm4cjb6sr74sj76hime',
+#                'kind': 'calendar#event',
+#                'location': 'Everett PAE',
+#                'organizer': {'email': 'unknownorganizer@calendar.google.com'},
+#                'privateCopy': True,
+#                'reminders': {'useDefault': False},
+#                'sequence': 0,
+#                'source': { 'title': '',
+#                            'url': 'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0'},
+#                'start': {'dateTime': '2019-07-20T07:30:00-07:00'},
+#                'status': 'confirmed',
+#                'summary': 'Flight to San Jose (AS 2740)',
+#                'transparency': 'transparent',
+#                'updated': '2019-06-10T22:34:10.857Z',
+#                'visibility': 'private'}],
+#   'kind': 'calendar#events',
+#   'summary': 'example@gmail.com',
+#   'timeZone': 'America/Los_Angeles',
+#   'updated': '2019-06-21T04:47:14.752Z'}
+#     return a
 
 def get_g_events(request):
-    result = {'accessRole': 'owner',
-              'defaultReminders': [{'method': 'popup', 'minutes': 30}],
-              'etag': '"p320e98u0sbsu40g"',
-              'items': [{'attendees': [{'email': 'queenie.giap@gmail.com',
-                                        'responseStatus': 'needsAction'},
-                                       {'email': 'example@gmail.com',
-                                        'organizer': True,
-                                        'responseStatus': 'accepted',
-                                        'self': True}],
-                         'created': '2019-06-21T04:43:59.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': 'Hiking at Castle Rock',
-                         'end': {'dateTime': '2019-06-22T11:30:00-07:00'},
-                         'etag': '"3122184478890000"',
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=Mmw0b2hoMHRmY3Y4ZTMxbmc2bm45ODIxdTEgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '2l4ohh0tfcv8e31ng6nn9821u1@google.com',
-                         'id': '2l4ohh0tfcv8e31ng6nn9821u1',
-                         'kind': 'calendar#event',
-                         'location': 'Stevens Creek County Park, 11401 Stevens Canyon '
-                         'Rd, Cupertino, CA 95014, USA',
-                         'organizer': {'email': 'example@gmail.com', 'self': True},
-                         'reminders': {'useDefault': True},
-                         'sequence': 0,
-                         'start': {'dateTime': '2019-06-22T10:30:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Hiking with Friends',
-                         'updated': '2019-06-21T04:43:59.445Z'},
-                        {'created': '2019-06-21T04:46:22.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': "Dinner with Nev's cousin",
-                         'end': {'dateTime': '2019-06-22T20:00:00-07:00'},
-                         'etag': '"3122184765242000"',
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=NGpybjkxdDF1c2pvMm1mcjA0aGZmcWIwbzAgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '4jrn91t1usjo2mfr04hffqb0o0@google.com',
-                         'id': '4jrn91t1usjo2mfr04hffqb0o0',
-                         'kind': 'calendar#event',
-                         'location': 'Pho Lovers, 253 E Maude Ave, Sunnyvale, CA 94085, '
-                         'USA',
-                         'organizer': {'email': 'example@gmail.com', 'self': True},
-                         'reminders': {'useDefault': True},
-                         'sequence': 0,
-                         'start': {'dateTime': '2019-06-22T19:00:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Dinner ',
-                         'updated': '2019-06-21T04:46:22.621Z'},
-                        {'created': '2019-06-21T04:47:14.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'end': {'dateTime': '2019-06-23T12:30:00-07:00'},
-                         'etag': '"3122184869504000"',
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=MzducTVqNnMyOHM0YnBrZ2loMXVzbzBudmggcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '37nq5j6s28s4bpkgih1uso0nvh@google.com',
-                         'id': '37nq5j6s28s4bpkgih1uso0nvh',
-                         'kind': 'calendar#event',
-                         'location': 'Starbucks, 175 E El Camino Real, Mountain View, CA '
-                         '94040, USA',
-                         'organizer': {'email': 'example@gmail.com', 'self': True},
-                         'reminders': {'useDefault': True},
-                         'sequence': 0,
-                         'start': {'dateTime': '2019-06-23T11:30:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Meeting with Dylan ',
-                         'updated': '2019-06-21T04:47:14.752Z'},
-                        {'attendees': [{'email': 'example@gmail.com',
-                                        'responseStatus': 'accepted',
-                                        'self': True}],
-                         'created': '2019-06-10T22:34:10.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': 'To see detailed information for automatically '
-                         'created events like this one, use the official '
-                         'Google Calendar app. https://g.co/calendar\n'
-                         '\n'
-                         'This event was created from an email you '
-                         'received in Gmail. '
-                         'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0\n',
-                         'end': {'dateTime': '2019-07-05T19:55:00-07:00'},
-                         'etag': '"3120412101631000"',
-                         'guestsCanInviteOthers': False,
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=XzZ0bG5hcXJsZTVwNmNwYjRkaG1qNHBocGVocG1pcTFpZWxoamlxMzU2ZHBqY2RyM2M1bTNhcmIyNjFqMzJkamxjOWptNmMzNGUxZ204ZWJrZWtwM2dzMWljOHI3NnByNjZrb21tc2I4ZHRuajAgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '7kukuqrfedlm2f9tsih2uc9he3s67cal5mb0f16ubgc0dpad9tu28p2b6sgf51kqhoo0',
-                         'id': '_6tlnaqrle5p6cpb4dhmj4phpehpmiq1ielhjiq356dpjcdr3c5m3arb261j32djlc9jm6c34e1gm8ebkekp3gs1ic8r76pr66kommsb8dtnj0',
-                         'kind': 'calendar#event',
-                         'location': 'San Jose SJC',
-                         'organizer': {'email': 'unknownorganizer@calendar.google.com'},
-                         'privateCopy': True,
-                         'reminders': {'useDefault': False},
-                         'sequence': 0,
-                         'source': {'title': '',
-                                    'url': 'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0'},
-                         'start': {'dateTime': '2019-07-05T17:45:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Flight to Everett (AS 2741)',
-                         'transparency': 'transparent',
-                         'updated': '2019-06-10T22:34:10.857Z',
-                         'visibility': 'private'},
-                        {'attendees': [{'email': 'example@gmail.com',
-                                        'responseStatus': 'accepted',
-                                        'self': True}],
-                         'created': '2019-06-10T22:34:10.000Z',
-                         'creator': {'email': 'example@gmail.com', 'self': True},
-                         'description': 'To see detailed information for automatically '
-                         'created events like this one, use the official '
-                         'Google Calendar app. https://g.co/calendar\n'
-                         '\n'
-                         'This event was created from an email you '
-                         'received in Gmail. '
-                         'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0\n',
-                         'end': {'dateTime': '2019-07-20T09:40:00-07:00'},
-                         'etag': '"3120412101631000"',
-                         'guestsCanInviteOthers': False,
-                         'htmlLink': 'https://www.google.com/calendar/event?eid=XzZ0bG5hcXJsZTVwNmNwYjRkaG1qNHBocGVnb21lczMzY2RuNjRzYmFjZHBtdW9yOTYxajZxc3BtZGNzNzBzajZkdGszNnNiaDYxazM4cnI5ZGxsbjJyaG82Y3FtNGNqYjZzcjc0c2o3NmhpbWUgcXV5ZW4ud2ljaGVyc0Bt',
-                         'iCalUID': '7kukuqrfedlm2f9t1gpccnbqjcsoci0fms6k8prfoh3qq0h4oimkqn835b2k76rrg4eg',
-                         'id': '_6tlnaqrle5p6cpb4dhmj4phpegomes33cdn64sbacdpmuor961j6qspmdcs70sj6dtk36sbh61k38rr9dlln2rho6cqm4cjb6sr74sj76hime',
-                         'kind': 'calendar#event',
-                         'location': 'Everett PAE',
-                         'organizer': {'email': 'unknownorganizer@calendar.google.com'},
-                         'privateCopy': True,
-                         'reminders': {'useDefault': False},
-                         'sequence': 0,
-                         'source': {'title': '',
-                                    'url': 'https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNjx2VqxXwUnzudSr71YSBjBMco6n8E1o0'},
-                         'start': {'dateTime': '2019-07-20T07:30:00-07:00'},
-                         'status': 'confirmed',
-                         'summary': 'Flight to San Jose (AS 2740)',
-                         'transparency': 'transparent',
-                         'updated': '2019-06-10T22:34:10.857Z',
-                         'visibility': 'private'}],
-              'kind': 'calendar#events',
-              'summary': 'example@gmail.com',
-              'timeZone': 'America/Los_Angeles',
-              'updated': '2019-06-21T04:47:14.752Z'}
-    google_events = result['items']
+    google_events = get_json(request)
     context = {'g_events': google_events,
                'current_user':  User.managers.get_current_user(request.session['id'])
                }
     return render(request, "alarm_prediction_app/show_g_events_page.html", context)
 
+# put api info in json and return the info
+def get_json(request):
+    jsonObj = get_info_from_gcalendar(request)
+    # jsonObj = retjson()
 
-def process_calc_g_events(request, index, g_event_id):
-    calendar_event = google_events[int(index)]
+    with open('apps/alarm_prediction_app/static/alarm_prediction_app/data.txt', 'w') as outfile:  
+        json.dump(jsonObj, outfile)
+    return jsonObj["items"]
 
-    if calendar_event['id'] == g_event_id:
-        ex_event = {'name': calendar_event['summary'],
-                'start_address': '150 S Taaffe St, Sunnyvale, CA 94086',
-                'end_address': calendar_event['location'],
-                'start_time': calendar_event['start']['dateTime'],
-                'importance_level': 1,
-                'travel_by': 3,
-                'description': calendar_event['description']}
-        User.managers.g_calculate_time(request.session['id'], ex_event)
-        return redirect(reverse("google_events_page"))
-    return redirect(reverse('main_page'))
+def show_g_events(request, index, g_event_id):
+    event_details = get_data_from_jsonfile(g_event_id)
+    context = {
+        'event_details' : event_details
+    }
+    return render(request, "alarm_prediction_app/event_details.html", context)
 
-    # calendar_event = {'attendees': [{'email': 'queenie.giap@gmail.com',
-    #                                  'responseStatus': 'needsAction'},
-    #                                 {'email': 'example@gmail.com',
-    #                                  'organizer': True,
-    #                                  'responseStatus': 'accepted',
-    #                                  'self': True}],
-    #                   'created': '2019-06-21T04:43:59.000Z',
-    #                   'creator': {'email': 'example@gmail.com', 'self': True},
-    #                   'description': 'Hiking at Castle Rock',
-    #                   'end': {'dateTime': '2019-06-22T11:30:00-07:00'},
-    #                   'etag': '"3122184478890000"',
-    #                   'htmlLink': 'https://www.google.com/calendar/event?eid=2lOSDJGRODwgrejjaGVyc0Bt',
-    #                   'iCalUID': 'uyguygygui@google.com',
-    #                   'id': 'wertyuio',
-    #                   'kind': 'calendar#event',
-    #                   'location': 'Stevens Creek County Park, 11401 Stevens Canyon '
-    #                   'Rd, Cupertino, CA 95014, USA',
-    #                   'organizer': {'email': 'example@gmail.com', 'self': True},
-    #                   'reminders': {'useDefault': True},
-    #                   'sequence': 0,
-    #                   'start': {'dateTime': '2019-06-22T10:30:00-07:00'},
-    #                   'status': 'confirmed',
-    #                   'summary': 'Hiking with Friends',
-    #                   'updated': '2019-06-21T04:43:59.445Z'}
+def display_gcalendar_form(request, g_event_id):
+    event_details = get_data_from_jsonfile(g_event_id)
+    if request.method == "GET":
+        context = {
+            'event_details' : event_details
+        }
+        return render(request, "alarm_prediction_app/create_alarm.html", context)
+    else:
+        print("*********display_gcalendar_form***************")
+        User.managers.g_calculate_time(request.session['id'], request.POST)
+        return redirect(reverse("main_page"))
 
+def get_data_from_jsonfile(g_event_id):
+    with open('apps/alarm_prediction_app/static/alarm_prediction_app/data.txt') as json_file:  
+        data = json.load(json_file)
+    event_details = {}
+    found = False
+    for eventInfo in data['items']:
+        print('id: ' + eventInfo['id'])
+        if eventInfo['id']== g_event_id:
+            event_details['id'] = eventInfo['id']
+            event_details['start_date'] = eventInfo['start']['dateTime']
+            # event_details['start_date'] = datetime.fromisoformat(start_date_str).strftime("%m/%d/%y %H:%M:%S")
+            event_details['end_date'] = eventInfo['end']['dateTime']
+            # event_details['end_date'] = datetime.fromisoformat(end_date_str).strftime("%m/%d/%y %H:%M:%S")
+            event_details['summary'] = eventInfo['summary']
+            event_details['location'] = eventInfo['location']
+            if 'attendees' in eventInfo:
+                event_details['attendees'] = eventInfo['attendees']
+            found = True
+        if found:
+            break
+    return event_details

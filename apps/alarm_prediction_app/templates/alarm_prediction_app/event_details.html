@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang='en'>
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>AAAAAAAAAAA</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/add_event_style.css' %}">
+    <style>
+        .wrapper {
+            font-family: futura;
+            color: #4F5A5E;
+        }
+        .container {
+            width: 50%;
+            border: 2px solid black;
+            min-height: 500px;
+            text-align: left;
+        }
+        .container2 {
+            width: 50%;
+            /* border: 2px solid black; */
+            min-height: 500px;
+            text-align: left;
+        }
+        p {
+            /* color: #74A6A7; */
+            color: black;
+            font-size:15px;
+        }
+        h1{
+            text-align: center; 
+        }
+        html, body, #map_canvas {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px
+}
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1> {{event_details.summary}}</h1>
+    <p><label>Start Date: </label> {{event_details.start_date}}</p>
+    <p><label>End Date: </label> {{event_details.end_date}}</p>
+    <p><label>Location: </label> {{event_details.location}}</p>
+    <p><label>Attendees: 
+        <ul>
+            {% for attendee in event_details.attendees %}
+                <li>Email: {{attendee.email}}, Response: {{attendee.responseStatus}}</li>
+            {%endfor%}
+        </ul>
+    </p>
+    
+
+</div>
+<br>
+<div class="container2">
+<p><td><a href="/create/{{event.id}}"><button type="submit" name="setAlarm" class="btn btn-primary btn-s btn_box">Set Alarm</button></a></td></p>
+</div>
+</body>
+</html>

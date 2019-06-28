@@ -70,9 +70,7 @@ class MapsAPI:
         directions_result = None
         print('get_time event.start_address', event.start_address)
         print('get_time event.end_address', event.end_address)
-        print('get_time arrival_time', arrival_time)
-        print('get_time mode', type(self.TRAVEL_BY[event.travel_by]))
-        # try:
+        print('get_time arrival_time', arrival_time)        # try:
         directions_result = self.gmaps.directions(event.start_address, event.end_address, mode=self.TRAVEL_BY[event.travel_by], arrival_time=arrival_time)
         leg = directions_result[0]['legs'][0]
         # except IndexError or googlemaps.exceptions.ApiError:

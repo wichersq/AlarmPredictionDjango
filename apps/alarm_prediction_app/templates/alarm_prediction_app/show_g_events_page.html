@@ -20,7 +20,7 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
 
-    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/show_g_events_style.css' %}">
+    <link rel="stylesheet" href="{% static 'SampleApp/css/show_g_events_style.css' %}">
 <style>
 
 
@@ -68,18 +68,22 @@
         </div>
     </div>
     <div class="col">
-       
+        <table>
         {% for event in g_events %}
-        <li>
-        <div id="logo">
-            <h4>{{event.summary}}</h4>
-            <a href="/gcalendar/{{forloop.counter0}}/{{event.id}}"><span><span></a>
-        </div>
-        <li>
-     
+            <tr>
+                <td><a href="/gcalendar/{{forloop.counter0}}/{{event.id}}">{{event.summary}}</a></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>{{event.start.dateTime}}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>{{event.end.dateTime}}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td><a href="/gcalendar/calc_alarm/{{event.id}}"><button type="submit" name="setAlarm" class="btn btn-primary btn-s btn_box">Set Alarm</button></a></td>
+            </tr>
         {%endfor%}
-
-       </ul>
+        </table>
     </div>
     <script type="text/javascript" language="Javascript"
         src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -91,7 +95,7 @@
             document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
             {% endfor %}
         }
-        display_error();
+        // display_error();
     </script>
 
 </body>

@@ -61,28 +61,28 @@
             </div>
             <div class="container">
                 <div class="leftBox container-fluid">
-                    <form action='/create' method="POST">
+                    <form action='/gcalendar/calc_alarm/{{event_details.id}}' method="POST">
                         {% csrf_token %}
                         <div class="fill_box">
                             <label>Name Of Event:</label>
                             <p id="n_error"></p>
-                            <input class ="input_info" name='name'>
+                            <input class ="input_info" name='name' value = "{{event_details.summary}}">
                         </div>
                         <div class="fill_box">
                             <label> Start Location:</label>
                             <p id="s_error"></p>
-                            <input class ="input_info" name='start_address'>
+                            <input class ="input_info" name='start_address' value = "">
                         </div>
                         <div class="fill_box">
                             <label>End Location:</label>
                             <p id="e_error"></p>
-                            <input class ="input_info" name='end_address'">
+                            <input class ="input_info" name='end_address'  value = "{{event_details.location}}">
                         </div>
                         <div class="fill_box">
                             <label>Event Start Time:</label>
                             <p id="st_error"></p>
-                            <input class ="input_info" type="datetime-local" id="event_time_picker" name='start_time'
-                                value="<?php echo date('Y-m-d'); ?>">
+                            <input class ="input_info" type="datetime" id="event_time_picker" name='start_time'
+                                value= "{{event_details.start_date}}">
                         </div>
                         <div class="fill_box">
                             <label>Important:</label>
@@ -155,7 +155,7 @@
                         {%for event in event_list.all%}
                         <tr class = "table-row">
                             <td><a href="/show/{{event.id}}">{{event.name}}</a></td>
-                           {% comment %} TODO: need to save timezone in the database event {% endcomment %}
+                           
                             <td>{{event.start_time|timezone:"America/Los_Angeles"}}</td>
                             {%with is_passed=event.is_passed%}
                             <td>

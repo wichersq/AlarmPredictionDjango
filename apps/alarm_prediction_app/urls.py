@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^user$', views.display_login, name="main_page"),
     url(r'^create$', views.process_event),
     url(r'^calc_alarm/(?P<event_id>\d+)$', views.calc_alarm),
+
     url(r'^show/(?P<event_id>\d+)$', views.show_event),
     url(r'^delete/(?P<event_id>\d+)$', views.delete_event),
     url(r'^edit/(?P<event_id>\d+)$', views.display_edit_page),
@@ -18,8 +19,9 @@ urlpatterns = [
     url(r'^oauth2_call_back', views.oauth2_call_back),
 
     url(r'^gcalendar/events$', views.get_g_events, name="google_events_page"),
-    url(r'^gcalendar/(?P<index>\d+)/(?P<g_event_id>\w+)$', views.process_calc_g_events),
-
+    url(r'^gcalendar/(?P<index>\d+)/(?P<g_event_id>\w+)$', views.show_g_events),
+    url(r'^gcalendar/calc_alarm/(?P<g_event_id>\w+)$', views.display_gcalendar_form),
+    
     #    url(r'^user/(?P<user_id>\d+)/thread/(?P<post_id>\d+)/post_comment$', views.post_comment),
     #    url(r'^user/(?P<user_id>\d+)/thread/(?P<post_id>\d+)/delete$', views.delete_post)
 ]

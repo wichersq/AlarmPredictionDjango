@@ -15,14 +15,14 @@ class AlarmCalc():
     def calc_alarm_time(self, event):
         event.prep_duration = self.update_prepare_sec(event)
         arrival_sec = event.early_arrival_sec
-        travel_break_sec = self.calc_break_time(event.travel_duration, event.get_trans_display().upper())
+        travel_break_sec = self.calc_break_time(event.travel_duration, event.get_travel_by_display().upper())
         print(type(arrival_sec),type(travel_break_sec),type(event.prep_duration),type(event.travel_duration) )
         recommended_ready_sec = arrival_sec + travel_break_sec + event.prep_duration + event.travel_duration
         return recommended_ready_sec
 
     def update_prepare_sec(self, event):
         prepare_sec = self.DEFAULT_PREPARE_SEC * event.importance_level
-        travel_mode =  event.get_trans_display().upper()
+        travel_mode =  event.get_travel_by_display().upper()
         print("travel_by", travel_mode)
         if event.travel_duration > (2*self.SEC_PER_HOUR):
             prepare_sec += (5*self.SEC_PER_MIN)*(event.travel_duration/(2*self.SEC_PER_HOUR))

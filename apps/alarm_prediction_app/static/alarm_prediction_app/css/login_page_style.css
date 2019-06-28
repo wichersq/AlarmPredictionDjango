@@ -6,10 +6,10 @@ body {
         background-image: url("rose2.png");
 } 
 div.container{
-        width:100%; 
-        min-height:800px;
-        font-size: 18px;
-        color: #4F5A5E;  
+    width:100%; 
+    min-height:800px;
+    font-size: 18px;
+    color: #4F5A5E;  
 }
 .leftBox, .rightBox{
         width:45%;

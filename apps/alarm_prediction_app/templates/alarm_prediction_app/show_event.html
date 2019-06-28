@@ -54,8 +54,10 @@
             {% comment %} <div class="img"><img style="width:400px;height:300px" src="{% static 'alarm_prediction_app/img/flower.png' %}"></div> {% endcomment %}
             <iframe src="https://giphy.com/embed/MsKOYqJ5JE0jS" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/spongebob-squarepants-patrick-bike-MsKOYqJ5JE0jS"></a></p>
             <div class="container">
+                {% load tz %}
+                {% localtime on %}
                 <h1> {{event.name}}</h1>
-                <p><label>Time: </label> {{event.start_time}}</p>
+                <p><label>Time: </label> {{event.start_time|timezone:"America/Los_Angeles"}}</p>
                 <p><label>Origin: </label> {{event.start_address}}</p>
                 <p>
                     <label>Destination: </label>
@@ -66,15 +68,16 @@
                      - {{event.end_address}}
                     </a>
                 </p>
-                <p><label>Transportation: </label>{{event.get_trans_display}}</p>
+                <p><label>Transportation: </label>{{event.get_travel_by_display}}</p>
                 <p><label>Importance: </label>{{ event.importance_level}}</p>
-                <p><label>Alarm: </label>{{ event.alarm}}</p>
+                <p><label style = 'color: Red'>Alarm: </label> {{ event.alarm|timezone:"America/Los_Angeles"}}</p>
                 {%if event.alarm != None%}
                 <ul>
                     <li>Travel: {{event.get_format_travel_duration|safe}} ----- {{event.travel_distance}}</li>
                     <li>Recommend preparation: {{event.get_format_prep_duration|safe}}  ----- {{event.early_arrival_sec}}</li>
                 </ul>
                 {%endif%}
+                {% endlocaltime %}
             </div>
     </div>
     <script type="text/javascript" language="Javascript"
