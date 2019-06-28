@@ -186,31 +186,23 @@
         </div>
     </div>
 
-        <div class="pop_window alarm_time">
-                <div class="pop_container">
-                    <p>Enter the room#</p>
-                    <p>123123123131313qwfqwfqwfqwfqwfqwfqfwqwfqwfwq2</p>
-                </div>
-        </div>
-        <script type="text/javascript" language="Javascript"
-            src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" language="Javascript"
-            src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
-        <script type="text/javascript">
-            function display_error() {
-                {% for message in messages %}
-                document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
-                {% endfor %}
-            }
-            display_error();
-            $('a').click(function(){
-                document.querySelector(".alarm_time").style.display = "inline"
-            })
-        </script>
-        <script>
-           
-        </script>
-    </main>
+    <script type="text/javascript" language="Javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript"
+        src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
+    <script type="text/javascript">
+        function display_error() {
+            {% for message in messages %}
+            document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
+            {% endfor %}
+        }
+        display_error();
+        $('a').click(function(){
+            document.querySelector(".alarm_time").style.display = "inline"
+        })
+    </script>
+
+</main>
     
 
     <!-- <script>

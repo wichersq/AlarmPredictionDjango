@@ -210,7 +210,7 @@ class UserManager(models.Model):
 
     def get_all_events(self, user_id):
         current_user = self.get_current_user(user_id)
-        events = current_user.events.all().order_by('-created_at')
+        events = current_user.events.all().order_by('-start_time')
         return events
 
     def validate_event(self, name, start, dest, start_time):

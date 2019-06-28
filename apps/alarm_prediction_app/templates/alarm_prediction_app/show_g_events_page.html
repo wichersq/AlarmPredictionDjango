@@ -19,45 +19,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <script type="text/javascript" language="Javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="{% static 'SampleApp/css/show_g_events_style.css' %}">
-<style>
-
-
-#logo {
-  float: left;
-  background-color: green;
-  padding: 10px;
-  position: relative;
-}
-
-/* from: http://stackoverflow.com/questions/796087/make-a-div-into-a-link */
-#logo a span { 
-  position:absolute; 
-  width:100%;
-  height:100%;
-  top:0;
-  left: 0;
-
-  /* edit: added z-index */
-  z-index: 1;
-
-  
-}
-
-#logo:hover {
-	background-color: #0A0;  
-}
-
-#logo:active {
-	background-color: #A9A;
-  top: +2px;
-}
-</style>
-
+    <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/show_g_events_style.css' %}">
 </head>
-
-
 
 <body class="jumbotron">
     <div class="header">
@@ -68,35 +34,128 @@
         </div>
     </div>
     <div class="col">
-        <table>
+        <table class= "table">
         {% for event in g_events %}
             <tr>
                 <td><a href="/gcalendar/{{forloop.counter0}}/{{event.id}}">{{event.summary}}</a></td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
                 <td>{{event.start.dateTime}}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
                 <td>{{event.end.dateTime}}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td><a href="/gcalendar/calc_alarm/{{event.id}}"><button type="submit" name="setAlarm" class="btn btn-primary btn-s btn_box">Set Alarm</button></a></td>
+                {% comment %} <td><a href="/gcalendar/calc_alarm/{{event.id}}"><button type="submit" class="btn btn-primary">Set Alarm</button></a></td> {% endcomment %}
+                <td>
+                    <button type="button" class=" open-Dialog btn btn-primary" data-toggle="modal" data-target="#eventInput" data-description="{{event.summary}}" data-location = "{{event.location}}" data-start = "{{event.start.dateTime}}" data-id = "{{event.id}}">Open modal for @mdo</button>
+                </td>
             </tr>
         {%endfor%}
         </table>
     </div>
-    <script type="text/javascript" language="Javascript"
-        src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" language="Javascript" src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
+  <!-- The Modal -->
+    <div class="modal fade" id="eventInput" tabindex="-1" role="dialog" aria-labelledby="eventInputLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:90%" role="document">
+        <div class="modal-content">
+            <form action='' method="POST">
+            <!-- Modal Header -->
+            <div class="modal-header">
+            <h4 class="modal-title">Event Details</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="container-fluid">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-form-label">Name Of Event:</label>
+                            <p id="n_error"></p>
+                           <input id="eventName" class="form-control" name='name' value=""/>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label"> Start Location:</label>
+                            <p id="s_error"></p>
+                           <input  class="form-control" name='start_address' value = "">
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">End Location:</label>
+                            <p id="e_error"></p>
+                           <input id="eventLocation" class="form-control" name='end_address'  value = "">
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Event Start Time:</label>
+                            <p id="st_error"></p>
+                            <input data-format="dd/MM/yyyy hh:mm:ss" id="start_time" class="form-control datepicker" type="text" name='start_time'
+                                value= ""/>
+                        </div>
+                        <div class="form-group">
+                            
+                            <label class="col-form-label">Important:</label>
+                            <div class = "row">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" name="importance_level" value="1">1
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" name="importance_level" value="2">2
 
-    <script type="text/javascript">
-        function display_error() {
-            {% for message in messages %}
-            document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
-            {% endfor %}
-        }
-        // display_error();
-    </script>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" name="importance_level"  value="3"
+                                        checked="checked">3
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" name="importance_level"  value="4">4
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" name="importance_level"  value="5">5
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" >Travel by:</label>
+                            <div class = "row">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by"  value="0"
+                                    checked="checked"><img src="{% static 'alarm_prediction_app/img/walk.png' %}"  />
+                                </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by"  value="1">
+                                <img src="{% static 'alarm_prediction_app/img/bicycle.png' %}"  />
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by"  value="2">                
+                                <img src="{% static 'alarm_prediction_app/img/bus.png' %}"  />
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by"  value="3"><img src="{% static 'alarm_prediction_app/img/car.png' %}"  />
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="travel_by"  value="4"><img src="{% static 'alarm_prediction_app/img/airplane.png' %}"  />
+                            </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Note:</label>
+                            <p id="n_error"></p>
+                           <input class="form-control" name='description'">
+                        </div>
+                    </div>
+            </div>
+        <div class="modal-footer">
+            <button type="sumit" class="btn btn-primary">Set Alarm</button>
+            
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </form>
+
+      </div>
+    </div>
+</div>
+<script type="text/javascript" language="Javascript" src="{% static 'alarm_prediction_app/js/show_g_events_script.js' %}"></script>
+
+<script type="text/javascript">
+    function display_error() {
+        {% for message in messages %}
+        document.getElementById('{{message.extra_tags}}').innerHTML = '{{message}}';
+        {% endfor %}
+}
+    // display_error();
+</script>
 
 </body>
 
