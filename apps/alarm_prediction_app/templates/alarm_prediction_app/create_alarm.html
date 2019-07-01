@@ -155,7 +155,6 @@
                         {%for event in event_list.all%}
                         <tr class = "table-row">
                             <td><a href="/show/{{event.id}}">{{event.name}}</a></td>
-                           
                             <td>{{event.start_time|timezone:"America/Los_Angeles"}}</td>
                             {%with is_passed=event.is_passed%}
                             <td>

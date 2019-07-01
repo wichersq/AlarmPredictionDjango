@@ -429,7 +429,7 @@ def get_data_from_jsonfile(g_event_id):
         if eventInfo['id']== g_event_id:
             event_details['id'] = eventInfo['id']
             event_details['start_date'] = eventInfo['start']['dateTime']
-            # event_details['start_date'] = datetime.fromisoformat(start_date_str).strftime("%m/%d/%y %H:%M:%S")
+            # event_details['start_date'] = datetime.fromisoformat(eventInfo['start']['dateTime']).strftime("%m/%d/%y %H:%M:%S")
             event_details['end_date'] = eventInfo['end']['dateTime']
             # event_details['end_date'] = datetime.fromisoformat(end_date_str).strftime("%m/%d/%y %H:%M:%S")
             event_details['summary'] = eventInfo['summary']

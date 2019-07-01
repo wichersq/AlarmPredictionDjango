@@ -1,20 +1,4 @@
 
-// $('#eventInput').on('show.bs.modal', function (event) {
-//     var button = $(event.relatedTarget) // Button that triggered the modal
-//     var recipient = button.data('whatever')
-//     // Extract info from data-* attributes
-//     $("label").css('color', "red")
-//     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-//     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-//     var modal = $(this)
-//     modal.find('.modal-title').text('New message to ' + recipient)
-//     modal.find('#event_name').val("Hi")
-//   })
-    // $(document).ready(function() {
-    //     $('#datepicker').datetimepicker({
-    //         language: 'pt-BR'
-    //     });
-    // });
     
 
 
@@ -47,20 +31,9 @@ function check_empty() {
     alert("Form Submitted Successfully...");
     }
 }
-//Function To Display Popup
-function div_show() {
-    document.getElementById('abc').style.display = "block";
-}
-//Function to Hide Popup
-function div_hide(){
-    console.log('hello');
-    document.getElementById('abc').style.display = "none";
+
+function convert_time(s){
+    return '1/1/2000'
+
 }
 
-$(document).on("click", ".open-AddBookDialog", function () {
-    var myBookId = $(this).data('id');
-    $(".modal-body #bookId").val( myBookId );
-    // As pointed out in comments, 
-    // it is unnecessary to have to manually call the modal.
-    // $('#addBookDialog').modal('show');
-});
