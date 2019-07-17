@@ -29,15 +29,19 @@
 
 </head>
      <body>
+     {% load i18n %}
+     {% block content %}
+        {% comment %} {%get_current_language as LANGUAGE%}
+        {{LANGUAGE}}     {% endcomment %}
         <nav class="navbar navbar-light text-center" style="background-color: #E7EAF1; padding:1%">
 
             <div class="header">
                 <img src="{% static 'alarm_prediction_app/img/mylogo.png' %}" style="float:left" />
                 <img src="{% static 'alarm_prediction_app/img/alarmlogo.png' %}" style="float:left;width:70px" />
-                <h2 style="float:left">Hello, {{current_user.first_name}}!</h2>
+                <h2 style="float:left">{% trans "Hello" %}, {{current_user.first_name}}!</h2>
             </div>
             <div class="right_header">
-                <a href="/logout">Log out</a>
+                <a href="/logout">{% trans "Log out" %}</a>
                 <p><span id="datetime"></span></p>
             </div>
         </nav>
@@ -46,15 +50,15 @@
             <div class="jumbotron" style= "padding: 0% 5%">
                 <div class="wrapper">
                     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center" style="padding:2%">
-                        <h1 class="display-3" style="color: #BA2D7F">Alarm Predictability</h1>
-                        <h3 class="textbig" style="color: #939597">Don't worry about planning your next trip. We can help you plan and set an alarm for any occasion.</h3></br></br>
+                        <h1 class="display-3" style="color: #BA2D7F">{% trans "Alarm Predictability" %}</h1>
+                        <h3 class="textbig" style="color: #939597">{% trans "Don't worry about planning your next trip. We can help you plan and set an alarm for any occasion." %}</h3></br></br>
                         <div class="backgroundimage">
                             <background-image src="roseimage.jpg" alt="flower">
                         </div>
                         {%if not current_user.has_credential%}
-                            <a href="/authorize">Connect to Google Calendar</a>
+                            <a href="/authorize">{% trans "Connect to Google Calendar" %}</a>
                         {%else%}
-                            <a href="/gcalendar/events">My Google Calendar Event</a>
+                            <a href="/gcalendar/events">{% trans "My Google Calendar Event" %}</a>
                         {%endif%}
                     </div>
                 </div>
@@ -64,28 +68,28 @@
                     <form action='/create' method="POST">
                         {% csrf_token %}
                         <div class="fill_box">
-                            <label>Name Of Event:</label>
+                            <label>{% trans "Name Of Event" %} :</label>
                             <p id="n_error"></p>
                             <input class ="input_info" name='name'>
                         </div>
                         <div class="fill_box">
-                            <label> Start Location:</label>
+                            <label>{% trans "Start Location" %}:</label>
                             <p id="s_error"></p>
                             <input class ="input_info" name='start_address'>
                         </div>
                         <div class="fill_box">
-                            <label>End Location:</label>
+                            <label>{% trans "End Location" %}:</label>
                             <p id="e_error"></p>
                             <input class ="input_info" name='end_address'">
                         </div>
                         <div class="fill_box">
-                            <label>Event Start Time:</label>
+                            <label>{% trans "Event Start Time"%} :</label>
                             <p id="st_error"></p>
                             <input class ="input_info" type="datetime-local" id="event_time_picker" name='start_time'
                                 value="<?php echo date('Y-m-d'); ?>">
                         </div>
                         <div class="fill_box">
-                            <label>Important:</label>
+                            <label>{% trans "Important"%} :</label>
                             <div class="custom-control custom-radio">
                                 <input type="radio" name="importance_level" class="custom-control-input" value="1">1
                             </div>
@@ -105,7 +109,7 @@
                             </div>
                         </div>
                         <div class="fill_box">
-                            <label>Travel by:</label>
+                            <label>{% trans "Travel by"%} :</label>
                             <div class="custom-control custom-radio">
                                 <input type="radio" name="travel_by" class="custom-control-input" value="0"
                                     checked="checked"><img src="{% static 'alarm_prediction_app/img/walk.png' %}"  />
@@ -126,27 +130,26 @@
                             </div>
                         </div>
                         <div class="fill_box">
-                            <label>Note:</label>
+                            <label>{% trans "Note"%} :</label>
                             <p id="n_error"></p>
                             <input class ="input_info" name='description'">
                         </div>
                         <div class="btn_box">
-                            <button type="submit" style="width:150px; min-height:25px;background-color:#D7E2E8" >Submit</button>
-                            {% comment %} <a href='/clear'><button type="submit" class="btn btn-danger" style="width:100px">Clear</button></a> {% endcomment %}
+                            <button type="submit" style="width:150px; min-height:25px;background-color:#D7E2E8">{% trans Submit %}</button>
                         </div>
                     </form>
                 </div>
         <div class="rightBox">
             <div class="col-lg">
-                <h3 class="display-2 font-weight-bold">Event List</h3>
+                <h3 class="display-2 font-weight-bold">{% trans "Event List" %}</h3>
                 <p id="dq_error"></p>
                 <table class="table">
                     <thead class="thead-dark table-responsive">
                         <tr>
-                            <th scope="col">Event</th>
-                            <th scope="col">Start Time</th>
-                            <th scope="col">Predicted Alarm Time</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">{% trans "Event" %}</th>
+                            <th scope="col">{% trans "Start Time" %}</th>
+                            <th scope="col">{% trans "Predicted Alarm Time" %}</th>
+                            <th scope="col">{% trans "Actions" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -160,21 +163,21 @@
                             {%with is_passed=event.is_passed%}
                             <td>
                                 {%if event.alarm == None%}
-                                <a href="calc_alarm/{{event.id}}"><button class="btn btn-primary">Get Alarm Time</button></a>
+                                <a href="calc_alarm/{{event.id}}"><button class="btn btn-primary">{% trans "Get Alarm Time" %}</button></a>
                                 {%else%}
                                 {{event.alarm|timezone:"America/Los_Angeles"}} 
                                     {%if not is_passed%}
-                                    | <a href="#">Adjust Alarm</a>
+                                    | <a href="#">{% trans "Adjust Alarm" %}</a>
                                     {%endif%}
                                 {%endif%}
                             </td>
                             <td>
                                 {%if not is_passed%}
-                                <a href="/edit/{{event.id}}">Edit</a>
+                                <a href="/edit/{{event.id}}">{% trans "Edit" %}</a>
                                 {%else%}
-                                <a href="#">Rate Alarm</a>
+                                <a href="#">{% trans "Rate Alarm" %}</a>
                                 {%endif%}
-                                | <a href="/delete/{{event.id}}">Delete</a>
+                                | <a href="/delete/{{event.id}}">{% trans "Delete" %}</a>
                             </td>
                             {%endwith%}
                         </tr>
@@ -185,9 +188,12 @@
             </div>
         </div>
     </div>
+     {% endblock %}
+
+    
 
     <script type="text/javascript" language="Javascript"
-        src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" language="Javascript"
         src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
     <script type="text/javascript">
@@ -200,9 +206,12 @@
         $('a').click(function(){
             document.querySelector(".alarm_time").style.display = "inline"
         })
+
+   
     </script>
 
-</main>
+
+    </main>
     
 
     <!-- <script>
@@ -210,6 +219,7 @@
         alert('This is your alarm')
     })
     </script> -->
+   
     </body>
 
 <!-- <script>

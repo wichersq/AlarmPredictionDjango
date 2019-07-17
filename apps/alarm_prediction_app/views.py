@@ -16,11 +16,15 @@ import json
 from googleapiclient.discovery import build
 import pprint
 # TODO: fix it to work with ajax
+
+# from django.utils import translation
+
 pp = pprint.PrettyPrinter(indent=2)
 STATES_ARR = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
               "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
               "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI",
               "WY"]
+
 
 
 def display_cover(request):

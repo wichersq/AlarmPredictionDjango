@@ -14,10 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include	# added an import!
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-urlpatterns = [
-    url(r'^', include('apps.alarm_prediction_app.urls')),	# use your app_name here
-    url(r'^admin/', admin.site.urls)
 
+urlpatterns = [
+    	# use your app_name here
+    url(r'^', include('apps.alarm_prediction_app.urls')),
+
+    url(r'^admin/', admin.site.urls)
 ]
 
+# urlpatterns += i18n_patterns(
+#     url(r'^', include('apps.alarm_prediction_app.urls')),
+#     prefix_default_language=False, # < here
+# ) 
