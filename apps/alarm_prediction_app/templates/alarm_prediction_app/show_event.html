@@ -19,7 +19,7 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'alarm_prediction_app/css/add_event_style.css' %}">
-    <style>
+    {% comment %} <style>
         .wrapper {
             font-family: futura;
             color: #4F5A5E;
@@ -42,7 +42,7 @@
     margin: 0px;
     padding: 0px
 }
-    </style>
+    </style> {% endcomment %}
 </head>
 
 <body>
@@ -51,7 +51,7 @@
             <!-- <div class="logo"><img src="mylogo.png" alt="bird" style="width:100px;height:75px"></div> -->
             <h1>Your Event Details</h1>
             <h3 class="navbar-brand" href="#"></h3>
-            {% comment %} <div class="img"><img style="width:400px;height:300px" src="{% static 'alarm_prediction_app/img/flower.png' %}"></div> {% endcomment %}
+            {% comment %} <div class="img"><img style="width:400px;height:300px" src="{% static 'alarm_prediction_app/img/logo/flower.png' %}"></div> {% endcomment %}
             <iframe src="https://giphy.com/embed/MsKOYqJ5JE0jS" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/spongebob-squarepants-patrick-bike-MsKOYqJ5JE0jS"></a></p>
             <div class="container">
                 {% load tz %}
@@ -84,10 +84,10 @@
     src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" language="Javascript"
     src="{% static 'alarm_prediction_app/js/login_page_script.js' %}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
-    <div id="map_canvas" style="border: 2px solid #3872ac;"></div>
+    {% comment %} <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry"></script> {% endcomment %}
+    {% comment %} <div id="map_canvas" style="border: 2px solid #3872ac;"></div> {% endcomment %}
     
-    <script>
+    {% comment %} <script>
         var map;
         var bounds = new google.maps.LatLngBounds();
 
@@ -126,7 +126,7 @@
             map.fitBounds(bounds);
         }
         google.maps.event.addDomListener(window, "load", initialize);
-    </script>
+    </script> {% endcomment %}
 </body>
 
 </html>

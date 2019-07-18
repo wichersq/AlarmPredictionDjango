@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:22-0700\n"
+"POT-Creation-Date: 2019-07-18 14:59-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:41
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:43
 msgid "Hello"
 msgstr "Xin Chào"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:44
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:47
 msgid "Log out"
 msgstr "Đăng xuất"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:53
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:62
 msgid "Alarm Predictability"
 msgstr "Dự đoán báo thức"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:54
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:63
 msgid ""
 "Don't worry about planning your next trip. We can help you plan and set an "
 "alarm for any occasion."
@@ -38,79 +38,83 @@ msgstr ""
 "Đừng bận tâm về kế hoạch cho chuyến đi tiếp theo, chúng tôi sẽ giúp bạn lên "
 "kế hoạch cho những chuyến đi ấy."
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:59
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:68
 msgid "Connect to Google Calendar"
 msgstr "Kết nối với Google Calendar"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:61
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:70
 msgid "My Google Calendar Event"
 msgstr "Thời gian biểu của tôi"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:71
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:80
 msgid "Name Of Event"
 msgstr "Tên Sự Kiện"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:76
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:85
 msgid "Start Location"
 msgstr "Vị Trí Xuất Phát"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:81
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:90
 msgid "End Location"
 msgstr "Vị Trí Đến"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:86
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:95
 msgid "Event Start Time"
 msgstr "Sự kiện bắt đầu"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:92
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:101
 msgid "Important"
 msgstr "Độ Quan Trọng"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:112
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:121
 msgid "Travel by"
 msgstr "Phương tiện di chuyển"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:133
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:142
 msgid "Note"
 msgstr "Ghi Chú"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:144
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:147
+msgid "Submit Event"
+msgstr "Đặt sự kiện"
+
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:153
 msgid "Event List"
 msgstr "Danh sách sự kiện"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:149
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:158
 msgid "Event"
 msgstr "Sự kiện"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:150
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:159
 msgid "Start Time"
 msgstr "Thời Gian Bắt Đầu"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:151
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:160
 msgid "Predicted Alarm Time"
 msgstr "Dự đoán báo thức"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:152
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:161
 msgid "Actions"
 msgstr "Hoạt Động"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:167
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:176
 msgid "Get Alarm Time"
 msgstr "Đoán báo thức"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:171
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:180
 msgid "Adjust Alarm"
 msgstr "Điều chỉnh báo thức"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:177
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:186
 msgid "Edit"
 msgstr "Chỉnh sửa sự kiện"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:179
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:188
 msgid "Rate Alarm"
 msgstr "Đánh giá báo thức"
 
-#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:181
+#: apps/alarm_prediction_app/templates/alarm_prediction_app/login_page.html:190
 msgid "Delete"
 msgstr "Xóa sự kiện"
 

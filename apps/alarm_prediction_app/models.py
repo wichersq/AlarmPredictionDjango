@@ -230,7 +230,8 @@ class UserManager(models.Model):
             # TODO: put it aback
             # if start_time < today:
             #     errors['st_error'] = self.CREATE_OBJECT_ERROR['date']
-        return errors, start_time.strftime(self.DATE_STR_TZONE_FORMAT)
+            return errors, start_time.strftime(self.DATE_STR_TZONE_FORMAT)
+        return errors, ""
 
     def create_event(self, post_data, user_id, from_g_calendar):
         name = post_data['name']
