@@ -1,5 +1,5 @@
 * {
-    font-family: font-family: 'Raleway', sans-serif;
+    font-family: 'Raleway', sans-serif;
     font-family: 'Nunito', sans-serif;
 }
 
@@ -7,8 +7,9 @@ body {
     background-image: url("rose2.png");
 }
 
-div.container {
+div.con{
     width: 100%;
+    margin: 2%;
     min-height: 800px;
     font-size: 18px;
     color: #4F5A5E;
@@ -16,7 +17,7 @@ div.container {
     flex-direction: row;
 }
 .containBox {
-    width:48%;
+    width:50%;
     min-height: 500px;
     vertical-align: top;
 }
@@ -24,7 +25,7 @@ div.container {
 
 
 .header h2 {
-    width: 30%;
+    width: 70%;
     display: inline-block;
     vertical-align: top;
     font-size: 40px;

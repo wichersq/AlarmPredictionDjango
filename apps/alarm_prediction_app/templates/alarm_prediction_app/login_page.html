@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <title>Alarm Prediction App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
     <!-- Latest compiled and minified CSS -->
@@ -18,9 +18,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script>
         $('button').click(function(){
             alert("You have clicked a button!");
@@ -40,12 +38,12 @@
             <div class="header">
                 <img src="{% static 'alarm_prediction_app/img/logo/mylogo.png' %}" style="float:left" />
                 <img src="{% static 'alarm_prediction_app/img/logo/alarmlogo.png' %}" style="float:left;width:70px" />
-                <h2 style="float:left">{% trans "Hello" %}, {{current_user.first_name}}!</h2>
+                <h2 style="float:right">{% trans "Hello" %}, {{current_user.first_name}}!</h2>
             </div>
             <div class="right_header">
                 <div id='box'>
                     <a href="/logout">{% trans "Log out" %}</a>
-                        <img src="{% static 'alarm_prediction_app/img/'|add:request.LANGUAGE_CODE|add:'/flag.png' %}"/>
+                        <img src="{% static 'alarm_prediction_app/img/'|add:request.LANGUAGE_CODE|add:'/flag.png' %}" alt="flag" />
                     <span class="font-weight-bold" id="datetime"></span>
                 </div>
             </div>
@@ -72,8 +70,8 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div class="containBox container-fluid">
+            <div class="con">
+                <div class="containBox">
                     <form action='/create' method="POST">
                         {% csrf_token %}
                         <div class="fill_box">
@@ -148,12 +146,12 @@
                         </div>
                     </form>
                 </div>
-        <div class="containBox container-fluid">
-            <div class="col-lg">
+        <div class="containBox">
+   
                 <h3 class="display-2 font-weight-bold">{% trans "Event List" %}</h3>
                 <p id="dq_error"></p>
-                <table class="table">
-                    <thead class="thead-dark table-responsive">
+                <table class="table table-responsive table-bordered">
+                    <thead class="thead-dark">
                         <tr>
                             <th scope="col">{% trans "Event" %}</th>
                             <th scope="col">{% trans "Start Time" %}</th>
@@ -194,12 +192,16 @@
                         {% endlocaltime %}
                     </tbody>
                 </table>
-            </div>
         </div>
     </div>
      {% endblock %}
 
-    
+    <h1>My First Google Map</h1>
+
+    <div id="googleMap" style="width:100%;height:400px;"></div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=myMap"></script>
+
 
     <script type="text/javascript" language="Javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -215,7 +217,13 @@
         $('a').click(function(){
             document.querySelector(".alarm_time").style.display = "inline"
         })
-
+        function myMap() {
+            var mapProp= {
+                center:new google.maps.LatLng(51.508742,-0.120850),
+                zoom:5,
+            };
+            var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+      }
    
     </script>
 
