@@ -8,8 +8,8 @@ body {
 }
 
 div.con{
-    width: 100%;
-    margin: 2%;
+    width: 90%;
+    margin: auto;
     min-height: 800px;
     font-size: 18px;
     color: #4F5A5E;
