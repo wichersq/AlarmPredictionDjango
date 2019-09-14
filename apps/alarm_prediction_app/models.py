@@ -200,7 +200,7 @@ class UserManager(models.Model):
         event = None
         try:
             event = Event.objects.get(id=event_id)
-            print('get_a_event', event)
+#             print('get_a_event', event)
         except ObjectDoesNotExist:
             return event
 
@@ -223,7 +223,7 @@ class UserManager(models.Model):
             errors['s_error'] = self.MESSAGE_ERROR['blank']
         if not start_time:
             errors['st_error'] = self.MESSAGE_ERROR['blank']
-            print(errors['st_error'])
+#             print(errors['st_error'])
         else:
             today = datetime.now(pytz.timezone('US/Pacific'))
             start_time = self.convert_time_from_str(start_time)
@@ -243,7 +243,7 @@ class UserManager(models.Model):
         description = post_data['description']
 
         errors, str_time = self.validate_event(name, start, dest, start_time)
-        print("**********************str_time***************", str_time)
+#         print("**********************str_time***************", str_time)
         
         # set timezone for start_time not from google calendar
         if not from_g_calendar:
@@ -259,10 +259,10 @@ class UserManager(models.Model):
         return errors, event
 
     def g_calculate_time(self, user_id, event_info):
-        print('in model g_calculate_time')
-        print('********************event_info********************' , event_info)
+#         print('in model g_calculate_time')
+#         print('********************event_info********************' , event_info)
         errors, event = self.create_event(event_info, user_id, True)
-        print('**************event***********************',type(event))
+#         print('**************event***********************',type(event))
         if event:
             if event.travel_by != 3:
                 errors, event = self.get_alarm_time(user_id, event.id, None)
@@ -330,7 +330,7 @@ class UserManager(models.Model):
         return call_api_needed, re_calc_needed
 
     def update_an_event(self, event, call_api, re_calc, post_data):
-        print('model update_an_event')
+#         print('model update_an_event')
         errors = {}
         event.name = post_data['name']
         event.start_address = post_data['start_address']
@@ -338,15 +338,15 @@ class UserManager(models.Model):
         event.start_time = self.convert_time_from_str(post_data['start_time'])
         event.importance_level = int(post_data['importance_level'])
         event.travel_by = int(post_data['travel_by'])
-        print(event.travel_by)
+#         print(event.travel_by)
         if call_api:
             errors, event = self.get_alarm_time(
                 event.creator.id, event.id, event)
         elif re_calc:
-            print('update_alarm_time')
+#             print('update_alarm_time')
             self.update_alarm_time(event)
         event.save()
-        print('errors', errors, event.end_address)
+#         print('errors', errors, event.end_address)
         return errors, event
 
     def convert_time_from_str(self, str_time):
@@ -367,28 +367,21 @@ class UserManager(models.Model):
 
     def get_alarm_time(self, user_id, event_id, event):
         errors = {}
-        print('get_alarm_time_method')
         if event == None:
             event = self.get_a_event(event_id, user_id)
-        print('before method', event.start_address)
         if event.creator.id == user_id:
             try:
                 self.DATA_REQUEST.get_place_info(
                     event.dest_place, event.end_address)
                 arrival_sec = self.ALARM_CALC.calc_sec_arrive(
                     event.dest_place.reviews, event.dest_place.price_level, event.dest_place.rating)
-                print('arrival_sec', arrival_sec)
-                print('type(event.start_time)', type(event.start_time))
+#                 print('arrival_sec', arrival_sec)
+#                 print('type(event.start_time)', type(event.start_time))
                 arrival_time = event.start_time - \
                     timedelta(seconds=arrival_sec)
-                print('arrival_time', arrival_time)
                 event = self.DATA_REQUEST.get_time(event, arrival_time)
-                print('event done')
-                print('get_alarm_time', event.start_address)
-                print('get_alarm_time', event.dest_place.reviews)
                 event.early_arrival_sec = arrival_sec
             except ValueError as err:
-                print('catch the error', err)
                 errors['dq_error'] = self.CREATE_OBJECT_ERROR['data_request']
                 return errors, None
             event.dest_place.save()
@@ -403,8 +396,7 @@ class UserManager(models.Model):
             start_time = self.convert_time_from_str(start_time)
 
         event.alarm = start_time - timedelta(seconds=recommended_ready_sec)
-        print('travel time', event.travel_duration/60)
-        print("recommended_ready_sec", recommended_ready_sec/60)
+
 
     def delete_a_event(self, user_id, event_id):
         is_deleted = False
@@ -498,7 +490,6 @@ class Event(models.Model):
     def is_passed(self):
         start = self.start_time.replace()
         today = datetime.now(pytz.timezone('US/Pacific'))
-        print(start,  today, start > today)
         return start < today
 
     def get_format_travel_duration(self):
