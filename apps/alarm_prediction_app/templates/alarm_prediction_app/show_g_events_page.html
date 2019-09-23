@@ -45,7 +45,7 @@
                 {% comment %} <td>{%set a=event.end.dateTime%}{{a[0:16]}}</td> {% endcomment %}
                 {% comment %} <td><a href="/gcalendar/calc_alarm/{{event.id}}"><button type="submit" class="btn btn-primary">Set Alarm</button></a></td>  {% endcomment %}
                 <td> 
-                    <button type="button" class=" open-Dialog btn btn-primary" data-toggle="modal" data-target="#eventInput" data-description="{{event.summary}}" data-location = "{{event.location}}" data-start = "{{event.start.dateTime}}" data-id = "{{event.id}}">Set Alarm</button>
+                    <button type="button" class="open-Dialog btn btn-primary" data-toggle="modal" data-target="#eventInput" data-description="{{event.summary}}" data-location = "{{event.location}}" data-start = "{{event.start.dateTime}}" data-id = "{{event.id}}">Set Alarm</button>
                 </td>
             </tr>
         {%endfor%}
