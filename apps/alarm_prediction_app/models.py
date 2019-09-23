@@ -56,44 +56,42 @@ class UserManager(models.Model):
     def __init__(self):
         self.manager_session = {}
 
-    # TODO: write front end validation for this
-    # def has_empty_field(self, first, last, email, password,
-    #                     confirm_password, errors_dict):
-    #     is_valid = True
-    #     if len(first) < 2:
-    #         errors_dict["fn_error"] = self.MESSAGE_ERROR['first']
-    #         is_valid = False
-    #     if len(last) < 2:
-    #         errors_dict["ln_error"] = self.MESSAGE_ERROR['last']
-    #         is_valid = False
-    #     if not self.EMAIL_REGEX.match(email):
-    #         errors_dict["e_error"] = self.MESSAGE_ERROR['invalid_email']
-    #         is_valid = False
-    #     if not password:
-    #         errors_dict["p_error"] = self.MESSAGE_ERROR['blank']
-    #         is_valid = False
-    #     else:
-    #       is_valid = match_confirm_password
-    #     return is_valid
+    def has_empty_field(self, first, last, email, password,
+                        confirm_password, errors_dict):
+        is_valid = True
+        if len(first) < 2:
+            errors_dict["fn_error"] = self.MESSAGE_ERROR['first']
+            is_valid = False
+        if len(last) < 2:
+            errors_dict["ln_error"] = self.MESSAGE_ERROR['last']
+            is_valid = False
+        if not self.EMAIL_REGEX.match(email):
+            errors_dict["e_error"] = self.MESSAGE_ERROR['invalid_email']
+            is_valid = False
+        if not password:
+            errors_dict["p_error"] = self.MESSAGE_ERROR['blank']
+            is_valid = False
+        else:
+          is_valid = self.match_confirm_password(password,confirm_password,errors_dict)
+        return is_valid
 
-    def match_confirm_password(self, password, confirm_password, errors_dict):
-        if password != confirm_password:
+    def match_confirm_password(self, password, confirm_pass, errors_dict):
+        if password != confirm_pass:
             errors_dict["cp_error"] = self.MESSAGE_ERROR['confirm_pass']
             return False
         return True
 
     def basic_validator(self, post_data):
         errors = {}
-        # TODO: can delete if do front end validation
-        # has_no_empty_field = self.has_empty_field(self.manager_session['first'],
-        #                                           self.manager_session['last'],
-        #                                           self.manager_session['email'],
-        #                                           self.manager_session['password'],
-        #                                           confirm_pass, errors)
-        has_no_empty_field = True
+
+        has_no_empty_field = self.has_empty_field(post_data['first'],
+                                                  post_data['last'],
+                                                  post_data['email'],
+                                                  post_data['password'],
+                                                  post_data['confirm_pass'], errors)
         if has_no_empty_field \
                 and self.check_age(post_data['birthday'], errors) \
-                and self.match_confirm_password(post_data['con_pass'], post_data['pass'], errors):
+                and self.match_confirm_password(post_data['confirm_pass'], post_data['password'], errors):
             if self.has_email(post_data['email']):
                 errors['e_error'] = self.MESSAGE_ERROR['email_taken']
         # if errors:
@@ -124,7 +122,7 @@ class UserManager(models.Model):
         address = f"{post_data['address']} {post_data['address2']}, {post_data['city']}, {post_data['state']} {post_data['zip']}"
         print(address)
         try:
-            self.DATA_REQUEST.get_place_id(address)
+            self.DATA_REQUEST.find_place_id(address)
         except ValueError as identifier:
             error_dict['adr_error'] = self.MESSAGE_ERROR['home_address']
             return ''
@@ -137,7 +135,7 @@ class UserManager(models.Model):
             address = self.get_home_address(post_data, errors)
             if address:
                 password = bcrypt.hashpw(
-                    post_data['pass'].encode('utf-8'), bcrypt.gensalt())
+                    post_data['password'].encode('utf-8'), bcrypt.gensalt())
 
                 user = User.objects.create(first_name=post_data['first'],
                                            last_name=post_data['last'],
@@ -154,7 +152,6 @@ class UserManager(models.Model):
 
     def validator_login_field(self, email, errors_dict):
         user = None
-        # FIXME: this doesn't need to check regex since front end validation
         if not self.EMAIL_REGEX.match(email):
             errors_dict["login_error"] = self.MESSAGE_ERROR['invalid_email']
         else:
@@ -168,7 +165,7 @@ class UserManager(models.Model):
         if user_info == None:
             errors['login_error'] = self.MESSAGE_ERROR['email_not_there']
         else:
-            password = post_data["pass"].encode('utf-8')
+            password = post_data["password"].encode('utf-8')
             checking_password = user_info.password.encode('utf-8')
 
             if bcrypt.checkpw(password, checking_password):
